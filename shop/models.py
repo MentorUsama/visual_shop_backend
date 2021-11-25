@@ -15,7 +15,7 @@ class SubCategory(models.Model):
     def __str__(self):
         return self.name
 class Tags(models.Model):
-    name=models.CharField(max_length=20)
+    name=models.CharField(max_length=20,unique=True)
     def __str__(self):
         return self.name
 
@@ -24,8 +24,8 @@ class Tags(models.Model):
 
 
 class Product(models.Model):
-    name=models.CharField(max_length=50)
-    description=models.TextField(max_length=300)
+    name=models.CharField(max_length=200)
+    description=models.TextField(max_length=800)
     # - attributes---pending
     tags=models.ManyToManyField(Tags)
     subCategoryId=models.ForeignKey(SubCategory,on_delete=models.PROTECT)
@@ -45,19 +45,16 @@ class Product(models.Model):
 
 class Feedback(models.Model):
     rating=models.PositiveIntegerField(validators=[MinValueValidator(1),MaxValueValidator(5)])
-    description=models.TextField(max_length=200)
+    description=models.TextField(max_length=500)
     customerId=models.ForeignKey(Customer,on_delete=models.CASCADE)
     productId=models.ForeignKey(Product,on_delete=models.CASCADE)
     def __str__(self):
-        return self.rating
+        return str(self.rating)
 
 class Images(models.Model):
     image=models.ImageField()
     productId=models.ForeignKey(Product,on_delete=models.CASCADE,null=False,blank=False)
     imageColor=models.CharField(max_length=20,blank=True,null=True)
-    def delete(self, using=None, keep_parents=False):
-        self.image.storage.delete(self.image.name)
-        super().delete()
 
 
 
