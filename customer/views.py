@@ -1,7 +1,6 @@
 from rest_framework.response import Response
 from .serializer import RegisterSerializer
-from django.core import serializers
-from django.views.decorators.csrf import csrf_exempt
+from .models import Customer
 
 # from rest_framework import BasicAuthentication
 from .serializer import RegisterSerializer
@@ -17,9 +16,24 @@ def RegisterAPI(request):
         data={}
         if serializer.is_valid():
             customer=serializer.save()
-            print(customer)
-            data['response']='Successfully Created the user'
-            data['email']=customer.email
+            data={"has_error":False,"message":"Signup Successfully","email":customer.email}
         else:
-            data=serializer.errors
+            data={"has_error":True,"message":"Failed To Register. Please Enter the right Information"}
         return Response(data)
+
+
+
+# Login API
+@api_view(['GET','POST'])
+@permission_classes((permissions.AllowAny,))
+def LoginAPI(request):
+    print("SDsdsd")
+    if request.method=="POST":
+        user1={};
+        try:
+            user1=Customer.objects.get(email=request.data['email'],password=request.data['password'])
+            user1={"message":"Successfully Loged in","email":request.data['email'],"has_error":False}
+            return Response(user1)
+        except:
+            user1={"message":"User Not Found","email":request.data['email'],"has_error":True}
+            return Response(user1)

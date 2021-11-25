@@ -20,3 +20,19 @@ class RegisterSerializer(serializers.ModelSerializer):
         )
         user.save()
         return user;
+
+
+
+# class LoginSerializer(serializers.Serializer):
+#     email=serializers.EmailField(max_length=50,unique=True)
+#     password=serializers.CharField(max_length=100,null=False)
+
+#     def save(self, validated_data):
+#         user1={};
+#         try:
+#             user1=Customer.objects.get(email="usama.farhat.99@gmail.com",password="password")
+#             user1={"message":"Successfully Loged in","email":validated_data['email'],"has_error":False}
+#             return user1;
+#         except:
+#             user1={"message":"User Not Found","email":validated_data['email'],"has_error":True}
+#             return user1;
