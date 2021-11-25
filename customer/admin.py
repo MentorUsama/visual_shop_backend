@@ -5,7 +5,6 @@ from .models import Customer, Province, City
 @admin.register(Customer)
 class CustomerAdmin(admin.ModelAdmin):
     list_display = ('name', 'email','city')
-
     def city(self, obj: Customer):
         return obj.cityId
 
