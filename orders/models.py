@@ -1,3 +1,4 @@
+from typing import OrderedDict
 from django.db import models
 from django.core.validators import MaxValueValidator, MinValueValidator,RegexValidator
 from django.db.models.signals import pre_save, post_save
@@ -31,6 +32,10 @@ class Order(models.Model):
     complaintStatus=models.CharField(max_length=50,choices=(("NO","No Complain Yet"),("pending","PENDING"),("solved","SOLVED")),default="NO") # should use regular expression
     def __str__(self):
         return f'Order By: {self.receiverName}+" on "+{self.orderDate}'
+# class Complaints(models.Model):
+#     - orderId:str
+#     - complaintStatus:str
+
 class Messages(models.Model):
     orderId=models.ForeignKey(Order,on_delete=models.CASCADE)
     message=models.CharField(max_length=50)

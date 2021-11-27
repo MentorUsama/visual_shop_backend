@@ -33,6 +33,7 @@ ALLOWED_HOSTS = ['visual-shop.vercel.app','localhost','http://localhost:3000','1
 
 # Application definition
 INSTALLED_APPS = [
+    'jazzmin',
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
