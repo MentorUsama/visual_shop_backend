@@ -6,7 +6,7 @@ from customer.models import Customer,City
 from shop.models import Product
 from django.dispatch import receiver
 from pprint import pprint
-
+from datetime import datetime
 
 # Create your models here.
 class Cuopen(models.Model):
@@ -29,19 +29,8 @@ class Order(models.Model):
     cuopenId=models.ForeignKey(Cuopen,on_delete=models.SET_NULL,null=True,blank=True)
     customerId=models.ForeignKey(Customer,on_delete=models.PROTECT)
     cityId=models.ForeignKey(City,on_delete=models.PROTECT)
-    complaintStatus=models.CharField(max_length=50,choices=(("NO","No Complain Yet"),("pending","PENDING"),("solved","SOLVED")),default="NO") # should use regular expression
     def __str__(self):
-        return f'Order By: {self.receiverName}+" on "+{self.orderDate}'
-# class Complaints(models.Model):
-#     - orderId:str
-#     - complaintStatus:str
-
-class Messages(models.Model):
-    orderId=models.ForeignKey(Order,on_delete=models.CASCADE)
-    message=models.CharField(max_length=50)
-    isAdmin=models.BooleanField(default=True)
-    def __str__(self):
-        return self.message
+        return f'{self.receiverName} : {self.orderDate}'
 class OrderedProduct(models.Model):
     totalQuantity=models.IntegerField()
     totalPrice=models.DecimalField(decimal_places=3,max_digits=8)
@@ -51,3 +40,16 @@ class OrderedProduct(models.Model):
     orderId=models.ForeignKey(Order,on_delete=models.CASCADE)
     def __str__(self):
         return f'orderId: {self.orderId}'
+class Complaints(models.Model):
+    orderId=models.OneToOneField(Order,on_delete=models.CASCADE)
+    complaintStatus=models.CharField(max_length=50,choices=(("pending","PENDING"),("solved","SOLVED")),default="pending") # should use regular expression
+
+class Messages(models.Model):
+    complainId=models.ForeignKey(Complaints,on_delete=models.CASCADE)
+    message=models.TextField(max_length=1000)
+    isAdmin=models.BooleanField(default=True)
+    date=models.DateTimeField(auto_now=True, auto_now_add=False)
+    class Meta:
+        get_latest_by=['date','id']
+    def __str__(self):
+        return self.message
