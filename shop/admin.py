@@ -11,13 +11,22 @@ from .models import Category,SubCategory,Tags,Product,Feedback,Images
 class ImageAdminInline(admin.TabularInline):
     model=Images
     extra=1
-class FeedbackInline(admin.StackedInline):
+class FeedbackInline(admin.TabularInline):
     model=Feedback
-    extra=1
+    def has_add_permission(self, request, obj=None):
+        return False
+    def has_delete_permission(self, request, obj=None):
+        return False
+    def has_change_permission(self, request, obj=None):
+        return False
+    # def get_readonly_fields(self, request, obj=None):
+    #     return list(super().get_fields(request, obj))
+
 @admin.register(Product)
 class ProductAdmin(admin.ModelAdmin):
-    list_display = ('Image','name','Category','SubCategory')
+    list_display = ('Image','name','quantity','price','Category','SubCategory','sizes')
     inlines=[ImageAdminInline,FeedbackInline]
+    # Extra Field
     def Category(self, obj: Product):
         return obj.subCategoryId.categoryId
     def SubCategory(self, obj: Product):
@@ -29,4 +38,4 @@ class ProductAdmin(admin.ModelAdmin):
         except:
             return "Not Found"
 # ===================== Registering the rest of the table =========================
-admin.site.register([Category,SubCategory,Tags,Images,Feedback])
+admin.site.register([Category,SubCategory,Tags])

@@ -1,7 +1,8 @@
 from django.db import models
-from django.core.validators import MaxValueValidator, MinValueValidator 
+from django.core.validators import MaxValueValidator, MinValueValidator, RegexValidator 
 from customer.models import Customer
 from django.dispatch import receiver
+import re
 import os
 
 # Create your models here.
@@ -12,8 +13,10 @@ class Category(models.Model):
 class SubCategory(models.Model):
     name=models.CharField(max_length=20)
     categoryId=models.ForeignKey(Category,on_delete=models.PROTECT)
+    class Meta:
+        ordering = ['categoryId'] #Sort in desc order
     def __str__(self):
-        return self.name
+        return f'{self.categoryId} > {self.name}'
 class Tags(models.Model):
     name=models.CharField(max_length=20,unique=True)
     def __str__(self):
@@ -25,8 +28,10 @@ class Tags(models.Model):
 
 class Product(models.Model):
     name=models.CharField(max_length=200)
+    quantity=models.IntegerField(validators=[MinValueValidator(1)])
+    price=models.DecimalField(decimal_places=3,max_digits=8,validators=[MinValueValidator(1)])
     description=models.TextField(max_length=800)
-    # - attributes---pending
+    sizes=models.CharField(max_length=50,default="None",validators=[RegexValidator(regex="^([a-z0-9\s]+,)*([a-z0-9\s]+){1}$",message="The sizes must be comma seperated",flags=re.I)])
     tags=models.ManyToManyField(Tags)
     subCategoryId=models.ForeignKey(SubCategory,on_delete=models.PROTECT)
 

@@ -10,5 +10,10 @@ class OrderedAdminInline(admin.TabularInline):
 class OrderAdmin(admin.ModelAdmin):
     inlines=[OrderedAdminInline]
 
-admin.site.register([Cuopen])
+@admin.register(Cuopen)
+class CuopenAdmin(admin.ModelAdmin):
+    list_display = ('cuopenCode','totalQuantity','expiryDate','minPurchase')
+
+
+admin.site.register([])
 # Register your models here.
