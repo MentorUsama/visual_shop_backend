@@ -1,0 +1,17 @@
+===== Login Using Email =====
+http://127.0.0.1:8000/api/customer/auth/login
+    -- Possible Testing --
+    1) Missing Email:Error
+    2) Missing Password:Error
+    3) Email Does Not Exist:Error
+    4) Password Does not match:Error
+    5) Email and Password Match:Pass
+
+===== Signup Using Email ====
+http://127.0.0.1:8000/api/customer/auth/register
+    -- Possible Testing --
+    1) Missing Email:Error
+    2) Missing Password:Error
+    3) Password is blank:Error
+    4) Email Already Exist:Error
+    5) Uniques Email, Non Blank PAssword:True

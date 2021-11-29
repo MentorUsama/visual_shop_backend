@@ -149,6 +149,45 @@ CORS_ALLOWED_ORIGINS = [
 ]
 
 
+JAZZMIN_SETTINGS = {
+    # title of the window
+    "site_title": "Library Admin",
+
+    # Title on the login screen
+    "site_header": "Visual Shop",
+
+    # Title on the brand
+    "site_brand": "Library",
+
+    # Logo to use for your site
+    # "site_logo": "books/img/logo.png",
+    # "site_icon": None,
+
+    # Welcome text on the login screen
+    "welcome_sign": "Welcome to the library",
+
+    # Copyright on the footer
+    "copyright": "Visual Shop",
+
+    #############
+    # Side Menu #
+    #############
+    "show_sidebar": True,
+    "navigation_expanded": True,
+
+    ############
+    # Icons     #
+    #############
+    # https://fontawesome.com/icons?d=gallery&m=free&v=5.0.0,5.0.1,5.0.10,5.0.11,5.0.12,5.0.13,5.0.2,5.0.3,5.0.4,5.0.5,5.0.6,5.0.7,5.0.8,5.0.9,5.1.0,5.1.1,5.2.0,5.3.0,5.3.1,5.4.0,5.4.1,5.4.2,5.13.0,5.12.0,5.11.2,5.11.1,5.10.0,5.9.0,5.8.2,5.8.1,5.7.2,5.7.1,5.7.0,5.6.3,5.5.0,5.4.2
+    "icons": {
+        "auth": "fas fa-users-cog",
+        "auth.user": "fas fa-user",
+        "auth.Group": "fas fa-users",
+    },
+    "default_icon_parents": "fas fa-chevron-circle-right",
+    "default_icon_children": "fas fa-circle",
+}
+
 # Default primary key field type
 # https://docs.djangoproject.com/en/3.2/ref/settings/#default-auto-field
 
