@@ -5,5 +5,5 @@ from . import views
 
 urlpatterns = [
     path('auth/register', views.RegisterAPI,name='register'),
-    path('auth/login', views.LoginAPI,name='login'),
+    path('auth/login', views.MyTokenObtainPairView.as_view(), name='token_obtain_pair'),
 ]
