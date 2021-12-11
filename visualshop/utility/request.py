@@ -11,4 +11,6 @@ def unAuthrized(data):
     return Response(data=data,status=status.HTTP_401_UNAUTHORIZED)
 def Success(data):
     return Response(data)
+def Created(data):
+    return Response(data=data,status=status.HTTP_201_CREATED)
     

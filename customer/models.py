@@ -28,4 +28,4 @@ class Customer(models.Model):
     CVC = models.IntegerField(null=True, blank=True)
     cityId = models.ForeignKey(City, on_delete=models.SET_NULL, null=True, blank=True)
     def __str__(self):
-        return self.email
+        return ""+self.name

@@ -1,24 +1,11 @@
 ===== Login Using Email =====
-http://127.0.0.1:8000/api/customer/auth/login
+POST:http://127.0.0.1:8000/api/customer/auth/login
 {"username":"usama.farhat.99@gmail.com","password":"11111111111"}
-    -- Possible Testing --
-    1) Missing username | response2
-    2) Missing Password | response3
-    3) Missing Email and Password | response 2 && response3
-    4) Email Does Not Exist | response1
-    5) Password Does not match | response1
-    6) Email and Password Match | response4
-    -- Possible Response --
-    1) "detail": "No active account found with the given credentials" [401 unautherize]
-    2) "username": [] validation error [400 bad request]
-    3) "password":[] validation error [400 bad request]
-    4) "refresh":"","access":"","username":"" [200 OK]
-
-
 
 ===== Signup Using Email ====
-http://127.0.0.1:8000/api/customer/auth/register
+POST:http://127.0.0.1:8000/api/customer/auth/register
 {"email":"usama.farhat.99@gmail.com","password":"11111111111"}
-    -- Possible Testing --
 
-    -- Possible Response --
+===== getCustomerProfileData =====
+GET:http://127.0.0.1:8000/api/customer/profile/customerProfile
+Authorization:Bearer access
