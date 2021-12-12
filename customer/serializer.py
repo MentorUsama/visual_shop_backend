@@ -21,11 +21,17 @@ class UserSerializer(serializers.ModelSerializer):
         }
     def create(self, validated_data):
         return User.objects.create_user(validated_data['username'], validated_data['email'], validated_data['password'])
-
 class UserPasswordSerializer(serializers.ModelSerializer):
     class Meta:
         model=User
         fields=['password']
+class ChangePasswordSerializer(serializers.ModelSerializer):
+    model = User
+    old_password = serializers.CharField(required=True)
+    username=serializers.EmailField(required=True)
+    class Meta:
+        model=User
+        fields=['password','old_password','username']
 
 class RegisterSerializer(serializers.ModelSerializer):
     email=serializers.EmailField()

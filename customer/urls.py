@@ -7,6 +7,5 @@ urlpatterns = [
     path('auth/register', views.RegisterAPI.as_view(),name='register'),
     path('auth/login', views.LoginAPI.as_view(), name='token_obtain_pair'),
     path('profile/customerProfile', views.CustomerProfile.as_view(),name='CustomerProfile'),
-    path('profile/updatePassword', views.UserUpdatePasswordAPI.as_view(),name='updatePassword'),
-    path('profile/resetPassword', views.resetPasswordAPI.as_view(),name='resetPassword')
+    path('profile/updatePassword', views.UserUpdatePasswordAPI.as_view(),name='updatePassword')
 ]

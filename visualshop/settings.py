@@ -44,6 +44,7 @@ INSTALLED_APPS = [
     'corsheaders',
     'psycopg2',
     'rest_framework',
+    'django_rest_passwordreset',
     'customer',
     'orders',
     'shop'
