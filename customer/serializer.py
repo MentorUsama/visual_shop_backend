@@ -1,3 +1,5 @@
+from django.contrib.auth import models
+from django.db.models import fields
 from rest_framework import serializers
 from django.contrib.auth.models import User
 from .models import Customer
@@ -19,6 +21,12 @@ class UserSerializer(serializers.ModelSerializer):
         }
     def create(self, validated_data):
         return User.objects.create_user(validated_data['username'], validated_data['email'], validated_data['password'])
+
+class UserPasswordSerializer(serializers.ModelSerializer):
+    class Meta:
+        model=User
+        fields=['password']
+
 class RegisterSerializer(serializers.ModelSerializer):
     email=serializers.EmailField()
     password=serializers.CharField(max_length=29)
@@ -67,3 +75,7 @@ class profileSerializer(serializers.ModelSerializer):
         model=Customer
         depth=2
         fields='__all__'
+class profileUpdateSerializer(serializers.ModelSerializer):
+    class Meta:
+        model=Customer
+        fields=['name','address','contact','jazzCashNumber','cardNumber','cardExpiryDate','CVC','cityId']
