@@ -134,6 +134,11 @@ MEDIA_ROOT='static/images'
 
 
 
+EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
+
+
+
+
 
 REST_FRAMEWORK={
     # 'DEFAULT_PERMISSION_CLASSES': [
@@ -185,6 +190,9 @@ CORS_ALLOWED_ORIGINS = [
 ]
 
 
+
+
+
 JAZZMIN_SETTINGS = {
     # title of the window
     "site_title": "Library Admin",
@@ -223,6 +231,9 @@ JAZZMIN_SETTINGS = {
     "default_icon_parents": "fas fa-chevron-circle-right",
     "default_icon_children": "fas fa-circle",
 }
+
+
+
 
 
 

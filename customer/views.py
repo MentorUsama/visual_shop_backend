@@ -1,15 +1,10 @@
 from rest_framework import serializers
-from .serializer import RegisterSerializer,LoginSerializer,profileSerializer,profileUpdateSerializer,UserPasswordSerializer,ChangePasswordSerializer
+from .serializer import RegisterSerializer,LoginSerializer,profileSerializer,profileUpdateSerializer,ChangePasswordSerializer
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.views import APIView
 from .models import Customer
 from django.contrib.auth.models import User
 from django.http import Http404
-# Reset password libraries
-from django.dispatch import receiver
-from django.urls import reverse
-from django_rest_passwordreset.signals import reset_password_token_created
-from django.core.mail import send_mail  
 # from rest_framework import BasicAuthentication
 from visualshop.utility.request import SerilizationFailed,Success,NotFound
 # JWT imports
@@ -85,19 +80,3 @@ class UserUpdatePasswordAPI(APIView):
             else:
                 return SerilizationFailed({"old_password":"Old password is incorrect"})
         return SerilizationFailed(serializer.errors)
-
-
-
-# @receiver(reset_password_token_created)
-# def password_reset_token_created(sender, instance, reset_password_token, *args, **kwargs):
-#     email_plaintext_message = "{}?token={}".format(reverse('password_reset:reset-password-request'), reset_password_token.key)
-#     send_mail(
-#         # title:
-#         "Password Reset for {title}".format(title="Some website title"),
-#         # message:
-#         email_plaintext_message,
-#         # from:
-#         "noreply@visualshop.local",
-#         # to:
-#         [reset_password_token.user.email]
-#     )
