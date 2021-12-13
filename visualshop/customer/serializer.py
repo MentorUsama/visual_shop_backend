@@ -30,10 +30,10 @@ class ChangePasswordSerializer(serializers.ModelSerializer):
         fields=['password','old_password','username']
 class RegisterSerializer(serializers.ModelSerializer):
     email=serializers.EmailField()
-    password=serializers.CharField(max_length=29)
+    password=serializers.CharField(max_length=100)
     class Meta:
         model = Customer
-        fields=["email","password"]
+        fields=["email","password","authType"]
     def create(self, validated_data):
         # Creating the user
         userserialize=UserSerializer(data={

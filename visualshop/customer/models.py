@@ -32,6 +32,7 @@ class Customer(models.Model):
     cardExpiryDate = models.DateField(null=True, blank=True)
     CVC = models.IntegerField(null=True, blank=True)
     cityId = models.ForeignKey(City, on_delete=models.SET_NULL, null=True, blank=True)
+    authType=models.CharField(max_length=20,default="email",choices=(("email","EMAIL"),("google","GOOGLE")))
     def __str__(self):
         return ""+self.name
 

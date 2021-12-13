@@ -9,6 +9,12 @@ from django.http import Http404
 from visualshop.utility.request import SerilizationFailed,Success,NotFound
 # JWT imports
 from rest_framework_simplejwt.views import TokenObtainPairView
+# Django Auth
+from django.contrib.auth.hashers import make_password
+from django.contrib.auth.base_user import BaseUserManager
+from rest_framework_simplejwt.tokens import RefreshToken
+from rest_framework.utils import json
+import requests
 
 
 
@@ -29,6 +35,40 @@ class RegisterAPI(APIView):
 
 class LoginAPI(TokenObtainPairView):
     serializer_class = LoginSerializer
+
+
+
+
+
+class GoogleLoginRegister(APIView):
+    def post(self, request):
+        payload = {'access_token': request.data.get("token")}  # validate the token
+        r = requests.get('https://www.googleapis.com/oauth2/v2/userinfo', params=payload)
+        data = json.loads(r.text)
+
+        if 'error' in data:
+            content = {'message': 'wrong google token / this google token is already expired.'}
+            return SerilizationFailed(content)
+
+        # create user if not exist
+        try:
+            user = User.objects.get(email=data['email'])
+        except User.DoesNotExist:
+            password = make_password(BaseUserManager().make_random_password())
+            serializationData={"email":data['email'],"password":password}
+            serializationData['authType']="google";
+            serializer=RegisterSerializer(data=serializationData)
+            if(serializer.is_valid()):
+                serializer.save()
+                user = User.objects.get(email=data['email'])
+            else:
+                return SerilizationFailed(serializer.errors)
+        token = RefreshToken.for_user(user)  # generate token without username & password
+        response = {}
+        response['username'] = user.username
+        response['access_token'] = str(token.access_token)
+        response['refresh_token'] = str(token)
+        return Success(response)
 
 
 
