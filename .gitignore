@@ -1,16 +1,15 @@
 
 # Created by https://www.toptal.com/developers/gitignore/api/django
 # Edit at https://www.toptal.com/developers/gitignore?templates=django
-
 ### Django ###
-*.log
-*.pot
-*.pyc
-__pycache__/
-local_settings.py
-db.sqlite3
-db.sqlite3-journal
-media
+/visualshop/*.log
+/visualshop/*.pot
+/visualshop/*.pyc
+/visualshop/__pycache__/
+/visualshop/local_settings.py
+/visualshop/db.sqlite3
+/visualshop/db.sqlite3-journal
+/visualshop/media
 
 # If your build process includes running collectstatic, then you probably don't need or want to include staticfiles/
 # in your Git repository. Update and uncomment the following line accordingly.
@@ -18,82 +17,82 @@ media
 
 ### Django.Python Stack ###
 # Byte-compiled / optimized / DLL files
-*.py[cod]
-*$py.class
+/visualshop/*.py[cod]
+/visualshop/*$py.class
 
 # C extensions
-*.so
+/visualshop/*.so
 
 # Distribution / packaging
-.Python
-build/
-develop-eggs/
-dist/
-downloads/
-eggs/
-.eggs/
-lib/
-lib64/
-parts/
-sdist/
-var/
-wheels/
-share/python-wheels/
-*.egg-info/
-.installed.cfg
-*.egg
-MANIFEST
+/visualshop/.Python
+/visualshop/build/
+/visualshop/develop-eggs/
+/visualshop/dist/
+/visualshop/downloads/
+/visualshop/eggs/
+/visualshop/.eggs/
+/visualshop/lib/
+/visualshop/lib64/
+/visualshop/parts/
+/visualshop/sdist/
+/visualshop/var/
+/visualshop/wheels/
+/visualshop/share/python-wheels/
+/visualshop/*.egg-info/
+/visualshop/.installed.cfg
+/visualshop/*.egg
+/visualshop/MANIFEST
 
 # PyInstaller
 #  Usually these files are written by a python script from a template
 #  before PyInstaller builds the exe, so as to inject date/other infos into it.
-*.manifest
-*.spec
+/visualshop/*.manifest
+/visualshop/*.spec
 
 # Installer logs
-pip-log.txt
-pip-delete-this-directory.txt
+/visualshop/pip-log.txt
+/visualshop/pip-delete-this-directory.txt
 
 # Unit test / coverage reports
-htmlcov/
-.tox/
-.nox/
-.coverage
-.coverage.*
-.cache
-nosetests.xml
-coverage.xml
-*.cover
-*.py,cover
-.hypothesis/
-.pytest_cache/
-cover/
+/visualshop/htmlcov/
+/visualshop/.tox/
+/visualshop/.nox/
+/visualshop/.coverage
+/visualshop/.coverage.*
+/visualshop/.cache
+/visualshop/nosetests.xml
+/visualshop/coverage.xml
+/visualshop/*.cover
+/visualshop/*.py,cover
+/visualshop/.hypothesis/
+/visualshop/.pytest_cache/
+/visualshop/cover/
 
 # Translations
-*.mo
+/visualshop/*.mo
 
 # Django stuff:
 
 # Flask stuff:
-instance/
-.webassets-cache
+/visualshop/instance/
+/visualshop/.webassets-cache
 
 # Scrapy stuff:
-.scrapy
+/visualshop/.scrapy
 
 # Sphinx documentation
-docs/_build/
+/visualshop/docs/_build/
 
 # PyBuilder
-.pybuilder/
-target/
+/visualshop/.pybuilder/
+/visualshop/target/
 
 # Jupyter Notebook
-.ipynb_checkpoints
+/visualshop/.ipynb_checkpoints
 
 # IPython
-profile_default/
-ipython_config.py
+/visualshop/profile_default/
+/visualshop/ipython_config.py
 
 # pyenv
 #   For a library or package, you might want to ignore these files since the code is
@@ -108,46 +107,46 @@ ipython_config.py
 #Pipfile.lock
 
 # PEP 582; used by e.g. github.com/David-OConnor/pyflow
-__pypackages__/
+/visualshop/__pypackages__/
 
 # Celery stuff
-celerybeat-schedule
-celerybeat.pid
+/visualshop/celerybeat-schedule
+/visualshop/celerybeat.pid
 
 # SageMath parsed files
-*.sage.py
+/visualshop/*.sage.py
 
 # Environments
-.env
-.venv
-env/
-venv/
-ENV/
-env.bak/
-venv.bak/
+/visualshop/.env
+/visualshop/.venv
+/visualshop/env/
+/visualshop/venv/
+/visualshop/ENV/
+/visualshop/env.bak/
+/visualshop/venv.bak/
 
 # Spyder project settings
-.spyderproject
-.spyproject
+/visualshop/.spyderproject
+/visualshop/.spyproject
 
 # Rope project settings
-.ropeproject
+/visualshop/.ropeproject
 
 # mkdocs documentation
-/site
+/visualshop//site
 
 # mypy
-.mypy_cache/
-.dmypy.json
-dmypy.json
+/visualshop/.mypy_cache/
+/visualshop/.dmypy.json
+/visualshop/dmypy.json
 
 # Pyre type checker
-.pyre/
+/visualshop/.pyre/
 
 # pytype static type analyzer
-.pytype/
+/visualshop/.pytype/
 
 # Cython debug symbols
-cython_debug/
+/visualshop/cython_debug/
 
 # End of https://www.toptal.com/developers/gitignore/api/django
