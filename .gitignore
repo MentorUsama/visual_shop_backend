@@ -2,14 +2,14 @@
 # Created by https://www.toptal.com/developers/gitignore/api/django
 # Edit at https://www.toptal.com/developers/gitignore?templates=django
 ### Django ###
-/visualshop/*.log
-/visualshop/*.pot
-/visualshop/*.pyc
-/visualshop/__pycache__/
-/visualshop/local_settings.py
-/visualshop/db.sqlite3
-/visualshop/db.sqlite3-journal
-/visualshop/media
+*.log
+*.pot
+*.pyc
+__pycache__/
+local_settings.py
+db.sqlite3
+db.sqlite3-journal
+media
 
 # If your build process includes running collectstatic, then you probably don't need or want to include staticfiles/
 # in your Git repository. Update and uncomment the following line accordingly.
@@ -17,82 +17,82 @@
 
 ### Django.Python Stack ###
 # Byte-compiled / optimized / DLL files
-/visualshop/*.py[cod]
-/visualshop/*$py.class
+*.py[cod]
+*$py.class
 
 # C extensions
-/visualshop/*.so
+*.so
 
 # Distribution / packaging
-/visualshop/.Python
-/visualshop/build/
-/visualshop/develop-eggs/
-/visualshop/dist/
-/visualshop/downloads/
-/visualshop/eggs/
-/visualshop/.eggs/
-/visualshop/lib/
-/visualshop/lib64/
-/visualshop/parts/
-/visualshop/sdist/
-/visualshop/var/
-/visualshop/wheels/
-/visualshop/share/python-wheels/
-/visualshop/*.egg-info/
-/visualshop/.installed.cfg
-/visualshop/*.egg
-/visualshop/MANIFEST
+.Python
+build/
+develop-eggs/
+dist/
+downloads/
+eggs/
+.eggs/
+lib/
+lib64/
+parts/
+sdist/
+var/
+wheels/
+share/python-wheels/
+*.egg-info/
+.installed.cfg
+*.egg
+MANIFEST
 
 # PyInstaller
 #  Usually these files are written by a python script from a template
 #  before PyInstaller builds the exe, so as to inject date/other infos into it.
-/visualshop/*.manifest
-/visualshop/*.spec
+*.manifest
+*.spec
 
 # Installer logs
-/visualshop/pip-log.txt
-/visualshop/pip-delete-this-directory.txt
+pip-log.txt
+pip-delete-this-directory.txt
 
 # Unit test / coverage reports
-/visualshop/htmlcov/
-/visualshop/.tox/
-/visualshop/.nox/
-/visualshop/.coverage
-/visualshop/.coverage.*
-/visualshop/.cache
-/visualshop/nosetests.xml
-/visualshop/coverage.xml
-/visualshop/*.cover
-/visualshop/*.py,cover
-/visualshop/.hypothesis/
-/visualshop/.pytest_cache/
-/visualshop/cover/
+htmlcov/
+.tox/
+.nox/
+.coverage
+.coverage.*
+.cache
+nosetests.xml
+coverage.xml
+*.cover
+*.py,cover
+.hypothesis/
+.pytest_cache/
+cover/
 
 # Translations
-/visualshop/*.mo
+*.mo
 
 # Django stuff:
 
 # Flask stuff:
-/visualshop/instance/
-/visualshop/.webassets-cache
+instance/
+.webassets-cache
 
 # Scrapy stuff:
-/visualshop/.scrapy
+.scrapy
 
 # Sphinx documentation
-/visualshop/docs/_build/
+docs/_build/
 
 # PyBuilder
-/visualshop/.pybuilder/
-/visualshop/target/
+.pybuilder/
+target/
 
 # Jupyter Notebook
-/visualshop/.ipynb_checkpoints
+.ipynb_checkpoints
 
 # IPython
-/visualshop/profile_default/
-/visualshop/ipython_config.py
+profile_default/
+ipython_config.py
 
 # pyenv
 #   For a library or package, you might want to ignore these files since the code is
@@ -107,46 +107,46 @@
 #Pipfile.lock
 
 # PEP 582; used by e.g. github.com/David-OConnor/pyflow
-/visualshop/__pypackages__/
+__pypackages__/
 
 # Celery stuff
-/visualshop/celerybeat-schedule
-/visualshop/celerybeat.pid
+celerybeat-schedule
+celerybeat.pid
 
 # SageMath parsed files
-/visualshop/*.sage.py
+*.sage.py
 
 # Environments
-/visualshop/.env
-/visualshop/.venv
-/visualshop/env/
-/visualshop/venv/
-/visualshop/ENV/
-/visualshop/env.bak/
-/visualshop/venv.bak/
+.env
+.venv
+env/
+venv/
+ENV/
+env.bak/
+venv.bak/
 
 # Spyder project settings
-/visualshop/.spyderproject
-/visualshop/.spyproject
+.spyderproject
+.spyproject
 
 # Rope project settings
-/visualshop/.ropeproject
+.ropeproject
 
 # mkdocs documentation
-/visualshop//site
+/site
 
 # mypy
-/visualshop/.mypy_cache/
-/visualshop/.dmypy.json
-/visualshop/dmypy.json
+.mypy_cache/
+.dmypy.json
+dmypy.json
 
 # Pyre type checker
-/visualshop/.pyre/
+.pyre/
 
 # pytype static type analyzer
-/visualshop/.pytype/
+.pytype/
 
 # Cython debug symbols
-/visualshop/cython_debug/
+cython_debug/
 
 # End of https://www.toptal.com/developers/gitignore/api/django
