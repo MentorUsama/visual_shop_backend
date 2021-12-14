@@ -61,6 +61,8 @@ class GoogleLoginRegister(APIView):
             if(serializer.is_valid()):
                 serializer.save()
                 user = User.objects.get(email=data['email'])
+                user.set_unusable_password()
+                user.save()
             else:
                 return SerilizationFailed(serializer.errors)
         token = RefreshToken.for_user(user)  # generate token without username & password
