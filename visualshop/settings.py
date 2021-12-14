@@ -30,7 +30,7 @@ SECRET_KEY = config('SECRET_KEY')
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = False
-ALLOWED_HOSTS = ['visual-shop.vercel.app','localhost','http://localhost:3000','127.0.0.1','http://192.168.10.17:3000']
+ALLOWED_HOSTS = ['visualshopp.herokuapp.com','visual-shop.vercel.app','localhost','http://localhost:3000','127.0.0.1','http://192.168.10.17:3000']
 
 
 # Application definition
@@ -245,5 +245,5 @@ JAZZMIN_SETTINGS = {
 # Default primary key field type
 # https://docs.djangoproject.com/en/3.2/ref/settings/#default-auto-field
 
-# DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
+DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 django_heroku.settings(locals())
