@@ -10,6 +10,8 @@ class Category(models.Model):
     name=models.CharField(max_length=20)
     def __str__(self):
         return self.name
+    
+
 class SubCategory(models.Model):
     name=models.CharField(max_length=20)
     categoryId=models.ForeignKey(Category,on_delete=models.PROTECT)
@@ -21,7 +23,9 @@ class Tags(models.Model):
     name=models.CharField(max_length=20,unique=True)
     def __str__(self):
         return self.name
-
+    def save(self, *args, **kwargs):
+        self.name = self.name.lower()
+        return super(Tags, self).save(*args, **kwargs)
 
 
 
