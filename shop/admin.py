@@ -38,4 +38,4 @@ class ProductAdmin(admin.ModelAdmin):
         except:
             return "Not Found"
 # ===================== Registering the rest of the table =========================
-admin.site.register([Category,SubCategory,Tags])
+admin.site.register([Category,SubCategory,Tags,Images])

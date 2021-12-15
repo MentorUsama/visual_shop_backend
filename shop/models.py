@@ -47,6 +47,8 @@ class Product(models.Model):
         #     print('Video with field_boolean=True exists')
         # else:
         super(Product, self).save(*args, **kwargs)
+    class Meta:
+        ordering = ['-id']
 
 
 
@@ -62,8 +64,9 @@ class Feedback(models.Model):
 
 class Images(models.Model):
     image=models.ImageField()
-    productId=models.ForeignKey(Product,on_delete=models.CASCADE,null=False,blank=False)
+    productId=models.ForeignKey(Product,on_delete=models.CASCADE,null=False,blank=False,related_name='images')
     imageColor=models.CharField(max_length=20,blank=True,null=True)
+
 
 
 
