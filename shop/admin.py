@@ -13,12 +13,13 @@ class ImageAdminInline(admin.TabularInline):
     extra=1
 class FeedbackInline(admin.TabularInline):
     model=Feedback
+    extra=1
     def has_add_permission(self, request, obj=None):
-        return False
+        return True
     def has_delete_permission(self, request, obj=None):
-        return False
+        return True
     def has_change_permission(self, request, obj=None):
-        return False
+        return True
     # def get_readonly_fields(self, request, obj=None):
     #     return list(super().get_fields(request, obj))
 
