@@ -32,7 +32,7 @@ class OrderedProduct(models.Model):
     colourSelected=models.CharField(max_length=50)
     sizeSelected=models.CharField(max_length=50)
     productId=models.ForeignKey(Product,on_delete=models.PROTECT)
-    orderId=models.ForeignKey(Order,on_delete=models.CASCADE)
+    orderId=models.ForeignKey(Order,on_delete=models.CASCADE,related_name="orderedProducts")
     def __str__(self):
         return f'orderId: {self.orderId}'
 class Complaints(models.Model):

@@ -8,10 +8,11 @@ class OrderedProductSerializer(serializers.ModelSerializer):
         model=OrderedProduct
         fields="__all__"
 class OrderSerializer(serializers.ModelSerializer):
+    orderedProducts=OrderedProductSerializer(many=True)
     class Meta:
         model=Order
         exclude=['orderStatus','orderDate']
-        extra_kwargs = {
-            'totalPrice': {'read_only': True},
-            'customerId':{'read_only':True}
-        }
+    def validate_orderedProducts(self, attrs):
+        if len(attrs) == 0:
+            raise serializers.ValidationError('at least one offer required')
+        return attrs
