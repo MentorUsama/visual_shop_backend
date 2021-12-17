@@ -32,7 +32,7 @@ class Tags(models.Model):
 
 class Product(models.Model):
     name=models.CharField(max_length=200)
-    quantity=models.IntegerField(validators=[MinValueValidator(1)])
+    quantity=models.IntegerField(validators=[MinValueValidator(0)])
     price=models.DecimalField(decimal_places=3,max_digits=8,validators=[MinValueValidator(1)])
     description=models.TextField(max_length=800)
     sizes=models.CharField(max_length=50,default="None",validators=[RegexValidator(regex="^([a-z0-9\s]+,)*([a-z0-9\s]+){1}$",message="The sizes must be comma seperated",flags=re.I)])
