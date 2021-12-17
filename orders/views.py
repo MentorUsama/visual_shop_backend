@@ -22,10 +22,11 @@ class CreateOrder(APIView,IsAuthenticated):
         user=request.user
         customer=self.get_object(user)
         data['customerId']=customer.id
-        
+
         # Getting the order
         order=OrderSerializer(data=data)
         if(order.is_valid()):
+            order.save()
             return Success(order.data)
         else:
             return SerilizationFailed(order.errors)

@@ -20,7 +20,7 @@ class Order(models.Model):
     shippingAddress=models.TextField()
     receiverName=models.CharField(max_length=50)
     receiverContact=models.CharField(max_length=11,validators=[RegexValidator("^[0-9]{11}$",'Contact number should consist of 11 digits')])
-    orderStatus=models.CharField(max_length=50,default="pending",choices=(("pending","PENDING"),("received","RECEIVED")))
+    orderStatus=models.CharField(max_length=50,default="paymentPending",choices=(("pending","PENDING"),("received","RECEIVED"),("paymentPending","PAYMENTPENDING")))
     cuopenId=models.ForeignKey(Cuopen,on_delete=models.SET_NULL,null=True,blank=True)
     customerId=models.ForeignKey(Customer,on_delete=models.PROTECT)
     cityId=models.ForeignKey(City,on_delete=models.PROTECT)
