@@ -1,12 +1,17 @@
-from django.db.models import fields
 from .models import Order,OrderedProduct,Cuopen
 from rest_framework import serializers
 
 
 class OrderedProductSerializer(serializers.ModelSerializer):
+    totalPrice=serializers.DecimalField(decimal_places=3,max_digits=8,required=False)
     class Meta:
         model=OrderedProduct
         fields="__all__"
+    def create(self, validated_data):
+        data = validated_data.copy()
+        data['totalPrice'] = 20
+        return super(OrderedProductSerializer, self).create(**data)
+
 class OrderSerializer(serializers.ModelSerializer):
     orderedProducts=OrderedProductSerializer(many=True)
     class Meta:
