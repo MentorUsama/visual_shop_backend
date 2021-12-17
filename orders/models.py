@@ -1,12 +1,7 @@
-from typing import OrderedDict
 from django.db import models
-from django.core.validators import MaxValueValidator, MinValueValidator,RegexValidator
-from django.db.models.signals import pre_save, post_save
+from django.core.validators import MinValueValidator,RegexValidator
 from customer.models import Customer,City
 from shop.models import Product
-from django.dispatch import receiver
-from pprint import pprint
-from datetime import datetime
 
 # Create your models here.
 class Cuopen(models.Model):
