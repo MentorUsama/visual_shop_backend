@@ -1,8 +1,10 @@
+from rest_framework import serializers
 from rest_framework.views import APIView
-from  .serializer import OrderSerializer,OrderedProductSerializer
+from  .serializer import OrderSerializer,CheckOrderSerializer
 from customer.models import Customer
 from django.http import Http404
 from rest_framework.permissions import IsAuthenticated
+from .models import Cuopen
 # from rest_framework import BasicAuthentication
 from visualshop.utility.request import SerilizationFailed,Success,NotFound
 
@@ -30,3 +32,24 @@ class CreateOrder(APIView,IsAuthenticated):
             return Success(order.data)
         else:
             return SerilizationFailed(order.errors)
+class ValidateCuopen(APIView,IsAuthenticated):
+    def get_object(self, pk):        
+        try:
+            cuopen=Cuopen.objects.get(cuopenCode=pk)
+            return cuopen
+        except Cuopen.DoesNotExist:
+            raise Http404
+    def get(self,request,cupenCode):
+        try:
+            cupen=self.get_object(cupenCode)
+        except Http404:
+            return SerilizationFailed({"cuopenCode":["No Coupen Found"]})
+        # Checking the cuopen
+        data=request.data
+        data['cuopenId']=cupen.id
+        serilizedData=CheckOrderSerializer(data=request.data)
+        if(serilizedData.is_valid()):
+            result=serilizedData.save()
+            return Success(result)
+        else:
+            return SerilizationFailed(serilizedData.errors)
