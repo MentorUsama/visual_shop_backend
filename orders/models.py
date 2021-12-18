@@ -8,6 +8,7 @@ class Cuopen(models.Model):
     minPurchase=models.DecimalField(decimal_places=3,max_digits=8,validators=[MinValueValidator(0)])
     expiryDate=models.DateField()
     totalQuantity=models.DecimalField(decimal_places=3,max_digits=8)
+    discountPercentage=models.IntegerField(default=0,validators=[MinValueValidator(0)])
     cuopenCode=models.IntegerField(unique=True)
     def __str__(self):
         return f'{self.cuopenCode}: for purchase > {self.minPurchase} till: {self.expiryDate}'
