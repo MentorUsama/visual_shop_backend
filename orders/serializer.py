@@ -1,7 +1,5 @@
-from .models import Order,OrderedProduct,Cuopen
-from shop.models import Product
+from .models import Order,OrderedProduct
 from datetime import date
-from visualshop.utility.request import SerilizationFailed
 from rest_framework import serializers
 
 

@@ -7,7 +7,7 @@ from shop.models import Product
 class Cuopen(models.Model):
     minPurchase=models.DecimalField(decimal_places=3,max_digits=8,validators=[MinValueValidator(0)])
     expiryDate=models.DateField()
-    totalQuantity=models.DecimalField(decimal_places=3,max_digits=8)
+    totalQuantity=models.IntegerField(MinValueValidator(1))
     discountPercentage=models.IntegerField(default=0,validators=[MinValueValidator(0)])
     cuopenCode=models.IntegerField(unique=True)
     def __str__(self):
