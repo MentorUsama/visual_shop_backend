@@ -1,6 +1,6 @@
 from django.db import models
 from django.db.models import fields
-from .models import Complaints, Order,OrderedProduct,Complaints
+from .models import Complaints, Messages, Order,OrderedProduct,Complaints
 from datetime import date
 from rest_framework import serializers
 from customer.models import City,Province
@@ -115,7 +115,13 @@ class CitySerializer(serializers.ModelSerializer):
     class Meta:
         model=City
         fields=['name','provinceId']
+class MessageSerializer(serializers.ModelSerializer):
+    class Meta:
+        model=Messages
+        fields="__all__"
+        extra_kwargs = {'complainId': {'write_only': True}, }
 class ComplaintsSerializer(serializers.ModelSerializer):
+    messages=MessageSerializer(many=True)
     class Meta:
         model=Complaints
         fields="__all__"

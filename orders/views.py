@@ -2,12 +2,12 @@ from rest_framework import serializers
 from rest_framework.response import Response
 from rest_framework.pagination import PageNumberPagination
 from rest_framework.views import APIView
-from  .serializer import OrderSerializer,CheckOrderSerializer,GetAllOrdersSerializer,CreateComplaintsSerializer
+from  .serializer import MessageSerializer, OrderSerializer,CheckOrderSerializer,GetAllOrdersSerializer,CreateComplaintsSerializer
 from customer.models import Customer
 from django.http import Http404
 from rest_framework.generics import ListAPIView
 from rest_framework.permissions import IsAuthenticated
-from .models import Cuopen,Order
+from .models import Cuopen,Order,Complaints
 # from rest_framework import BasicAuthentication
 from visualshop.utility.request import SerilizationFailed,Success,NotFound
 
@@ -93,3 +93,25 @@ class AddComplaint(APIView,IsAuthenticated):
             return Success(complaintSerializer.data);
         else:
             return SerilizationFailed(complaintSerializer.errors)
+class AddMessage(APIView,IsAuthenticated):
+    def get_object(self, user,orderId):      
+        try:
+            complaint=Complaints.objects.get(orderId=orderId,orderId__customerId__user=user)
+            return complaint
+        except Complaints.DoesNotExist:
+            raise Http404
+    def post(self,request,orderId):
+        user=request.user
+        try:
+            complaint=self.get_object(user,orderId)
+        except Http404:
+            return NotFound({"detail":"Complaint not Found"})
+        data=request.data
+        data['complainId']=complaint.id
+        data['isAdmin']=False
+        messageSerializer=MessageSerializer(data=data)
+        if(messageSerializer.is_valid()):
+            messageSerializer.save()
+            return Success(messageSerializer.data);
+        else:
+            return SerilizationFailed(messageSerializer.errors)
