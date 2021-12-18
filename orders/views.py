@@ -1,10 +1,13 @@
 from rest_framework import serializers
+from rest_framework.response import Response
+from rest_framework.pagination import PageNumberPagination
 from rest_framework.views import APIView
-from  .serializer import OrderSerializer,CheckOrderSerializer
+from  .serializer import OrderSerializer,CheckOrderSerializer,GetAllOrdersSerializer,CreateComplaintsSerializer
 from customer.models import Customer
 from django.http import Http404
+from rest_framework.generics import ListAPIView
 from rest_framework.permissions import IsAuthenticated
-from .models import Cuopen
+from .models import Cuopen,Order
 # from rest_framework import BasicAuthentication
 from visualshop.utility.request import SerilizationFailed,Success,NotFound
 
@@ -53,3 +56,40 @@ class ValidateCuopen(APIView,IsAuthenticated):
             return Success(result)
         else:
             return SerilizationFailed(serilizedData.errors)
+class OrdersPagination(PageNumberPagination):
+    page_size = 10
+    page_size_query_param = 'page_size'
+    max_page_size = 10000
+class GetAllOrders(ListAPIView,IsAuthenticated):
+    serializer_class = GetAllOrdersSerializer
+    permission_classes = [IsAuthenticated]
+    pagination_class = OrdersPagination
+    def get_object(self, pk):        
+        try:
+            customer=Customer.objects.get(user=pk)
+            return customer
+        except Customer.DoesNotExist:
+            raise Http404
+    def get_queryset(self):
+        user = self.request.user
+        customer=self.get_object(user)
+        return Order.objects.filter(customerId=customer.id)
+class AddComplaint(APIView,IsAuthenticated):
+    def get_object(self, user,orderId):        
+        try:
+            order=Order.objects.get(customerId__user=user,id=orderId)
+            return order
+        except Order.DoesNotExist:
+            raise Http404
+    def post(self,request,orderId):
+        user=request.user
+        try:
+            order=self.get_object(user,orderId)
+        except Http404:
+            return NotFound({"detail":"Order not Found"})
+        complaintSerializer=CreateComplaintsSerializer(data={"orderId":orderId})
+        if(complaintSerializer.is_valid()):
+            complaintSerializer.save()
+            return Success(complaintSerializer.data);
+        else:
+            return SerilizationFailed(complaintSerializer.errors)

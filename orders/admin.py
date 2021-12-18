@@ -9,6 +9,7 @@ class OrderedAdminInline(admin.TabularInline):
     extra=1
 @admin.register(Order)
 class OrderAdmin(admin.ModelAdmin):
+    readonly_fields = ('id',)
     inlines=[OrderedAdminInline]
 
 

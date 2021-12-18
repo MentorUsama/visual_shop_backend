@@ -1,6 +1,9 @@
-from .models import Order,OrderedProduct
+from django.db import models
+from django.db.models import fields
+from .models import Complaints, Order,OrderedProduct,Complaints
 from datetime import date
 from rest_framework import serializers
+from customer.models import City,Province
 
 
 
@@ -101,3 +104,29 @@ class CheckOrderSerializer(serializers.ModelSerializer):
         discout=(self.validated_data['cuopenId'].discountPercentage*orderPrices)/100
         discout=orderPrices-discout
         return {"totalPrice":orderPrices,"discountPrice":discout,'cuopenId':self.validated_data['cuopenId'].id}
+
+# ============= Serializer For Getting All Orders =============
+class ProvinceSerializer(serializers.ModelSerializer):
+    class Meta:
+        model=Province
+        fields=['name']
+class CitySerializer(serializers.ModelSerializer):
+    provinceId=ProvinceSerializer()
+    class Meta:
+        model=City
+        fields=['name','provinceId']
+class ComplaintsSerializer(serializers.ModelSerializer):
+    class Meta:
+        model=Complaints
+        fields="__all__"
+class GetAllOrdersSerializer(serializers.ModelSerializer):
+    cityId=CitySerializer()
+    complaints=ComplaintsSerializer()
+    class Meta:
+        model=Order
+        fields="__all__"
+# ============== Creating Complaint ========================
+class CreateComplaintsSerializer(serializers.ModelSerializer):
+    class Meta:
+        model=Complaints
+        fields="__all__"

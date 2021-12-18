@@ -1,5 +1,6 @@
 from django.db import models
 from django.core.validators import MinValueValidator,RegexValidator
+from django.db.models.fields import related
 from customer.models import Customer,City
 from shop.models import Product
 
@@ -37,9 +38,8 @@ class OrderedProduct(models.Model):
     def __str__(self):
         return f'orderId: {self.orderId}'
 class Complaints(models.Model):
-    orderId=models.OneToOneField(Order,on_delete=models.CASCADE)
+    orderId=models.OneToOneField(Order,on_delete=models.CASCADE,related_name="complaints")
     complaintStatus=models.CharField(max_length=50,choices=(("pending","PENDING"),("solved","SOLVED")),default="pending") # should use regular expression
-
 class Messages(models.Model):
     complainId=models.ForeignKey(Complaints,on_delete=models.CASCADE)
     message=models.TextField(max_length=1000)
