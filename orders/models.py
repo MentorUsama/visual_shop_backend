@@ -7,7 +7,7 @@ from shop.models import Product
 class Cuopen(models.Model):
     minPurchase=models.DecimalField(decimal_places=3,max_digits=8,validators=[MinValueValidator(0)])
     expiryDate=models.DateField()
-    totalQuantity=models.IntegerField(MinValueValidator(1))
+    totalQuantity=models.IntegerField(validators=[MinValueValidator(0)])
     discountPercentage=models.IntegerField(default=0,validators=[MinValueValidator(0)])
     cuopenCode=models.IntegerField(unique=True)
     def __str__(self):
@@ -28,7 +28,7 @@ class Order(models.Model):
     def __str__(self):
         return f'{self.receiverName} : {self.orderDate}'
 class OrderedProduct(models.Model):
-    totalQuantity=models.IntegerField()
+    totalQuantity=models.IntegerField(validators=[MinValueValidator(1)])
     totalPrice=models.DecimalField(decimal_places=3,max_digits=8)
     colourSelected=models.CharField(max_length=50)
     sizeSelected=models.CharField(max_length=50)
