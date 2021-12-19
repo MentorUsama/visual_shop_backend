@@ -6,7 +6,7 @@ from .models import Customer
 from django.contrib.auth.models import User
 from django.http import Http404
 # from rest_framework import BasicAuthentication
-from visualshop.utility.request import SerilizationFailed,Success,NotFound
+from visualshop.utility.request import SerilizationFailed,Success,NotFound,unAuthrized
 # JWT imports
 from rest_framework_simplejwt.views import TokenObtainPairView
 # Django Auth
@@ -84,12 +84,16 @@ class CustomerProfile(APIView,IsAuthenticated):
             raise Http404
             
     def get(self, request, format=None):
+        if(request.user.is_anonymous):
+            return unAuthrized({"detail":"You are not Autherized to access"})
         user=request.user
         customer=self.get_object(user)
         serializer=profileSerializer(customer,many=False)
         return Success(serializer.data);
 
     def put(self, request, format=None):
+        if(request.user.is_anonymous):
+            return unAuthrized({"detail":"You are not Autherized to access"})
         user=request.user
         customer=self.get_object(user)
         serializer=profileUpdateSerializer(customer,data=request.data)

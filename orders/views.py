@@ -9,7 +9,7 @@ from rest_framework.generics import ListAPIView
 from rest_framework.permissions import IsAuthenticated
 from .models import Cuopen,Order,Complaints
 # from rest_framework import BasicAuthentication
-from visualshop.utility.request import SerilizationFailed,Success,NotFound
+from visualshop.utility.request import SerilizationFailed,Success,NotFound,unAuthrized
 
 # Create your views here.
 class CreateOrder(APIView,IsAuthenticated):
@@ -20,6 +20,8 @@ class CreateOrder(APIView,IsAuthenticated):
         except Customer.DoesNotExist:
             raise Http404
     def post(self, request, format=None):
+        if(request.user.is_anonymous):
+            return unAuthrized({"detail":"You are not Autherized to access"})
         # Passed Data
         data=request.data
 
@@ -43,6 +45,8 @@ class ValidateCuopen(APIView,IsAuthenticated):
         except Cuopen.DoesNotExist:
             raise Http404
     def get(self,request,cupenCode):
+        if(request.user.is_anonymous):
+            return unAuthrized({"detail":"You are not Autherized to access"})
         try:
             cupen=self.get_object(cupenCode)
         except Http404:
@@ -82,6 +86,8 @@ class AddComplaint(APIView,IsAuthenticated):
         except Order.DoesNotExist:
             raise Http404
     def post(self,request,orderId):
+        if(request.user.is_anonymous):
+            return unAuthrized({"detail":"You are not Autherized to access"})
         user=request.user
         try:
             order=self.get_object(user,orderId)
@@ -101,6 +107,8 @@ class AddMessage(APIView,IsAuthenticated):
         except Complaints.DoesNotExist:
             raise Http404
     def post(self,request,orderId):
+        if(request.user.is_anonymous):
+            return unAuthrized({"detail":"You are not Autherized to access"})
         user=request.user
         try:
             complaint=self.get_object(user,orderId)
