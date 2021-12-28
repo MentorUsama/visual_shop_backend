@@ -30,7 +30,7 @@ SECRET_KEY = config('SECRET_KEY')
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = config('DEBUG')
-ALLOWED_HOSTS = ['visualshopp.herokuapp.com','visual-shop.vercel.app','localhost','http://localhost:3000','127.0.0.1','http://192.168.10.17:3000']
+ALLOWED_HOSTS = ['visualshopp.herokuapp.com','visual-shop.vercel.app','localhost','http://localhost:3000','127.0.0.1','http://192.168.10.17:3000','http://localhost:19006/']
 
 
 # Application definition
@@ -192,6 +192,7 @@ CORS_ALLOWED_ORIGINS = [
     "https://sub.example.com",
     "http://localhost:3000",
     "http://127.0.0.1:9000",
+    "http://localhost:19006/"
 ]
 
 
