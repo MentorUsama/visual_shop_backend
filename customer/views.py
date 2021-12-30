@@ -56,7 +56,7 @@ class GoogleLoginRegister(APIView):
         except User.DoesNotExist:
             password = make_password(BaseUserManager().make_random_password())
             serializationData={"email":data['email'],"password":password}
-            serializationData['authType']="google";
+            serializationData['authType']="GOOGLE";
             serializer=RegisterSerializer(data=serializationData)
             if(serializer.is_valid()):
                 serializer.save()
