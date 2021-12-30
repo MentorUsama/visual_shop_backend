@@ -44,7 +44,10 @@ class RegisterSerializer(serializers.ModelSerializer):
         if(userserialize.is_valid()):
             user=User.objects.create_user(validated_data['email'],validated_data['email'],validated_data['password'])
             try:
-                customer=Customer.objects.create(user=user)
+                if(validated_data['authType']=="google" or validated_data['authType']=="GOOGLE"):
+                     customer=Customer.objects.create(user=user,authType=validated_data['authType'])
+                else:
+                    customer=Customer.objects.create(user=user)
                 return {
                     'email':validated_data['email'],
                     'username':validated_data['email'],
