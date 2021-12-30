@@ -4,7 +4,7 @@ from rest_framework.permissions import IsAuthenticated
 from rest_framework.views import APIView
 from .models import Customer
 from django.contrib.auth.models import User
-from django.http import Http404
+from django.http import Http404, response
 # from rest_framework import BasicAuthentication
 from visualshop.utility.request import SerilizationFailed,Success,NotFound,unAuthrized
 # JWT imports
@@ -22,10 +22,18 @@ import requests
 
 class RegisterAPI(APIView):
     def post(self, request, format=None):
-        serializer=RegisterSerializer(data=request.data)
+        data=request.data
+        data['authType']="email"
+        serializer=RegisterSerializer(data=data)
         if(serializer.is_valid()):
             serializer.save()
-            return Success(serializer.data)
+            user = User.objects.get(email=serializer.data['email'])
+            token = RefreshToken.for_user(user) 
+            response={}
+            response['username']=serializer.data['email']
+            response['access']=str(token.access_token)
+            response['refresh']=str(token)                                    
+            return Success(response)
         else:
             return SerilizationFailed(serializer.errors)
 
@@ -68,8 +76,8 @@ class GoogleLoginRegister(APIView):
         token = RefreshToken.for_user(user)  # generate token without username & password
         response = {}
         response['username'] = user.username
-        response['access_token'] = str(token.access_token)
-        response['refresh_token'] = str(token)
+        response['access'] = str(token.access_token)
+        response['refresh'] = str(token)
         return Success(response)
 
 

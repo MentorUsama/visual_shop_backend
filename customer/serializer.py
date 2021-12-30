@@ -4,6 +4,7 @@ from rest_framework import serializers
 from django.contrib.auth.models import User
 from .models import Customer
 # import jwt
+from rest_framework_simplejwt.tokens import RefreshToken
 from rest_framework_simplejwt.serializers import TokenObtainPairSerializer
 
 
@@ -34,6 +35,9 @@ class RegisterSerializer(serializers.ModelSerializer):
     class Meta:
         model = Customer
         fields=["email","password","authType"]
+        extra_kwargs = {
+            'password': {'write_only': True}
+        }
     def create(self, validated_data):
         # Creating the user
         userserialize=UserSerializer(data={
@@ -43,14 +47,10 @@ class RegisterSerializer(serializers.ModelSerializer):
         })
         if(userserialize.is_valid()):
             user=User.objects.create_user(validated_data['email'],validated_data['email'],validated_data['password'])
-            try:
-                if(validated_data['authType']=="google" or validated_data['authType']=="GOOGLE"):
-                     customer=Customer.objects.create(user=user,authType=validated_data['authType'])
-                else:
-                    customer=Customer.objects.create(user=user)
+            try:          
+                customer=Customer.objects.create(user=user,authType=validated_data['authType'])
                 return {
                     'email':validated_data['email'],
-                    'username':validated_data['email'],
                     'password':validated_data['password']
                 }
             except Exception as e:
