@@ -2,7 +2,7 @@ from django.contrib.auth import models
 from django.db.models import fields
 from rest_framework import serializers
 from django.contrib.auth.models import User
-from .models import Customer
+from .models import City, Customer,Province
 # import jwt
 from rest_framework_simplejwt.tokens import RefreshToken
 from rest_framework_simplejwt.serializers import TokenObtainPairSerializer
@@ -83,3 +83,14 @@ class profileUpdateSerializer(serializers.ModelSerializer):
     class Meta:
         model=Customer
         fields=['name','address','contact','jazzCashNumber','cardNumber','cardExpiryDate','CVC','cityId']
+
+# All Cities Serializer
+class citySerializer(serializers.ModelSerializer):
+    class Meta:
+        model=City
+        fields=['name','id']
+class ProvinceAndCitiesSerializer(serializers.ModelSerializer):
+    cities=citySerializer(many=True)
+    class Meta:
+        model=Province
+        fields='__all__'

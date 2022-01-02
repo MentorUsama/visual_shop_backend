@@ -11,5 +11,6 @@ urlpatterns = [
     path('auth/password_reset/', include('django_rest_passwordreset.urls', namespace='password_reset')),
     # Profile Related API
     path('profile/customerProfile', views.CustomerProfile.as_view(),name='CustomerProfile'),
-    path('profile/updatePassword', views.UserUpdatePasswordAPI.as_view(),name='updatePassword')
+    path('profile/updatePassword', views.UserUpdatePasswordAPI.as_view(),name='updatePassword'),
+    path('getProvinceAndCities',views.GetProvinceAndCities.as_view(),name="getProvinceAndCities")
 ]

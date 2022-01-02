@@ -1,12 +1,16 @@
 from rest_framework import serializers
-from .serializer import RegisterSerializer,LoginSerializer,profileSerializer,profileUpdateSerializer,ChangePasswordSerializer
+from .serializer import RegisterSerializer,LoginSerializer,profileSerializer,profileUpdateSerializer,ChangePasswordSerializer,ProvinceAndCitiesSerializer
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.views import APIView
 from .models import Customer
 from django.contrib.auth.models import User
 from django.http import Http404, response
+from .models import Province
 # from rest_framework import BasicAuthentication
 from visualshop.utility.request import SerilizationFailed,Success,NotFound,unAuthrized
+# Restframework
+from rest_framework.generics import ListAPIView
+from rest_framework.pagination import PageNumberPagination
 # JWT imports
 from rest_framework_simplejwt.views import TokenObtainPairView
 # Django Auth
@@ -81,8 +85,17 @@ class GoogleLoginRegister(APIView):
         return Success(response)
 
 
-
-
+# class GetProductsAPI(ListAPIView):
+#     queryset = Product.objects.all()
+#     serializer_class = ProductSerializer
+#     pagination_class = ProductPagination
+class ProvinceAndCitiesPagination(PageNumberPagination):
+    page_size = None
+    page_size_query_param = 'page_size'
+class GetProvinceAndCities(ListAPIView):
+    queryset = Province.objects.all()
+    serializer_class = ProvinceAndCitiesSerializer
+    pagination_class=ProvinceAndCitiesPagination
 
 class CustomerProfile(APIView,IsAuthenticated):
     def get_object(self, pk):        

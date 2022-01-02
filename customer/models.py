@@ -17,7 +17,7 @@ class Province(models.Model):
 
 class City(models.Model):
     name = models.CharField(max_length=20)
-    provinceId = ForeignKey(Province, on_delete=models.CASCADE)
+    provinceId = ForeignKey(Province, on_delete=models.CASCADE,related_name="cities")
     def __str__(self):
         return self.name
 
