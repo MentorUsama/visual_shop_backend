@@ -6,6 +6,7 @@ from django.contrib.auth.models import User
 from django.dispatch import receiver
 from django.urls import reverse
 from django_rest_passwordreset.signals import reset_password_token_created
+from django.db.models.signals import pre_save
 from django.core.mail import send_mail  
 
 # Create your models here.
@@ -35,6 +36,11 @@ class Customer(models.Model):
     authType=models.CharField(max_length=20,default="email",choices=(("email","EMAIL"),("google","GOOGLE")))
     def __str__(self):
         return ""+self.name
+def username_check(sender, instance, **kwargs):
+    instance.username=instance.username.lower()
+    instance.email=instance.email.lower()
+pre_save.connect(username_check, sender=User)
+
 
 
 @receiver(reset_password_token_created)

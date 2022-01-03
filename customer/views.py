@@ -26,7 +26,11 @@ import requests
 
 class RegisterAPI(APIView):
     def post(self, request, format=None):
+        # Getting The Data and converting email to lower case
         data=request.data
+        if "email" in data:
+            data['email']=data['email'].lower()
+
         data['authType']="email"
         serializer=RegisterSerializer(data=data)
         if(serializer.is_valid()):
@@ -134,7 +138,10 @@ class UserUpdatePasswordAPI(APIView):
         except User.DoesNotExist:
             raise Http404
     def put(self, request, format=None):
-        serializer=ChangePasswordSerializer(data=request.data)
+        data=request.data
+        if "username" in data:
+            data['username']=data['username'].lower()
+        serializer=ChangePasswordSerializer(data=data)
         if serializer.is_valid():
             try:
                 user=self.get_object(serializer.data['username'])

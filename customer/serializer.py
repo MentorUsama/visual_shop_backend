@@ -63,7 +63,11 @@ class RegisterSerializer(serializers.ModelSerializer):
 # Login Serializer
 class LoginSerializer(TokenObtainPairSerializer):
     def validate(self, attrs):
+        if "username" in attrs.keys():
+            attrs['username']=attrs['username'].lower()
         data = super().validate(attrs)
+        print("sd")
+        self.user.username=self.user.username.lower()
         refresh = self.get_token(self.user)
         data['refresh'] = str(refresh)
         data['access'] = str(refresh.access_token)
