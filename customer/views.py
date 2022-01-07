@@ -1,10 +1,9 @@
-from rest_framework import serializers
 from .serializer import RegisterSerializer,LoginSerializer,profileSerializer,profileUpdateSerializer,ChangePasswordSerializer,ProvinceAndCitiesSerializer
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.views import APIView
 from .models import Customer
 from django.contrib.auth.models import User
-from django.http import Http404, response
+from django.http import Http404
 from .models import Province
 # from rest_framework import BasicAuthentication
 from visualshop.utility.request import SerilizationFailed,Success,NotFound,unAuthrized

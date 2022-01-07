@@ -86,7 +86,7 @@ class profileSerializer(serializers.ModelSerializer):
 class profileUpdateSerializer(serializers.ModelSerializer):
     class Meta:
         model=Customer
-        fields=['name','address','contact','jazzCashNumber','cardNumber','cardExpiryDate','CVC','cityId']
+        fields=['name','address','contact','cityId']
 
 # All Cities Serializer
 class citySerializer(serializers.ModelSerializer):
