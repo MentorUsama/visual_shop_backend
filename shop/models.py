@@ -14,7 +14,7 @@ class Category(models.Model):
 
 class SubCategory(models.Model):
     name=models.CharField(max_length=20)
-    categoryId=models.ForeignKey(Category,on_delete=models.PROTECT)
+    categoryId=models.ForeignKey(Category,on_delete=models.PROTECT,related_name="Subcategories")
     class Meta:
         ordering = ['categoryId'] #Sort in desc order
     def __str__(self):
