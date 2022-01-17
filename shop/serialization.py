@@ -1,6 +1,7 @@
 from django.db.models import fields
+from django.forms import IntegerField
 from rest_framework import serializers
-from .models import Product,Images,Feedback
+from .models import Product,Images,Feedback, Tags
 from customer.models import Customer
 
 
@@ -38,3 +39,13 @@ class ProductSerializer(serializers.ModelSerializer):
         model=Product
         depth=4
         fields="__all__"
+
+
+class GetAllTagSerializer(serializers.ModelSerializer):
+    nused=serializers.IntegerField()
+    class Meta:
+        model=Tags
+        fields=['nused','id','name']
+        extra_kwargs = {
+            'nused': {'read_only': True}
+        }

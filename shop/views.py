@@ -1,12 +1,13 @@
 from rest_framework.views import APIView
 from rest_framework.pagination import PageNumberPagination
 from django.contrib.postgres.search import SearchQuery, SearchRank, SearchVector
-from .serialization import ProductSerializer
+from .serialization import ProductSerializer,GetAllTagSerializer
 from .models import Product
 from rest_framework.generics import ListAPIView, RetrieveAPIView
 from rest_framework.views import APIView
+from django.db.models import Count
 # getting models
-from .models import Product
+from .models import Product,Tags
 # from rest_framework import BasicAuthentication
 from visualshop.utility.request import Success
 # Create your views here.
@@ -16,6 +17,9 @@ class ProductPagination(PageNumberPagination):
     page_size = 10
     page_size_query_param = 'page_size'
     max_page_size = 10000
+class AllDataPagination(PageNumberPagination):
+    page_size = None
+    page_size_query_param = 'page_size'
 
 
 class GetProductsAPI(ListAPIView):
@@ -91,3 +95,10 @@ class FilterProduct(APIView):
                 subCategoryId__categoryId=data['categoryId'])
         serializer=ProductSerializer(products,many=True)
         return Success(serializer.data)
+
+
+
+class GetAllTags(ListAPIView):
+    queryset =  Tags.objects.annotate(nused=Count('product')).order_by('-nused')
+    serializer_class = GetAllTagSerializer
+    pagination_class= AllDataPagination
