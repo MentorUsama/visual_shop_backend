@@ -92,7 +92,7 @@ class FilterProduct(APIView):
         elif data['categoryId'] != None:
             products = products.filter(
                 subCategoryId__categoryId=data['categoryId'])
-        serializer=ProductSerializer(products,many=True)
+        serializer=ProductSerializer(products,many=True,context={'request': request})
         return Success(serializer.data)
 
 
