@@ -71,7 +71,7 @@ class GetProductByText(ListAPIView):
         ).filter(rank__gte=0.3).order_by('-rank')
         return results
 class FilterProduct(APIView):
-    def get(self, request, format=None):
+    def post(self, request, format=None):
         data = request.data
         if data['searchText'] != None:
             text = data['searchText']
