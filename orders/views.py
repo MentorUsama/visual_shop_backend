@@ -64,10 +64,13 @@ class OrdersPagination(PageNumberPagination):
     page_size = 10
     page_size_query_param = 'page_size'
     max_page_size = 10000
+class AllDataPagination(PageNumberPagination):
+    page_size = None
+    page_size_query_param = 'page_size'
 class GetAllOrders(ListAPIView,IsAuthenticated):
     serializer_class = GetAllOrdersSerializer
     permission_classes = [IsAuthenticated]
-    pagination_class = OrdersPagination
+    pagination_class = AllDataPagination
     def get_object(self, pk):        
         try:
             customer=Customer.objects.get(user=pk)
