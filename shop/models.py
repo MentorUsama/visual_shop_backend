@@ -54,13 +54,13 @@ class Product(models.Model):
 
 
 
-class Feedback(models.Model):
-    rating=models.PositiveIntegerField(validators=[MinValueValidator(1),MaxValueValidator(5)])
-    description=models.TextField(max_length=500)
-    customerId=models.ForeignKey(Customer,on_delete=models.CASCADE)
-    productId=models.ForeignKey(Product,on_delete=models.CASCADE,related_name="feedbacks")
-    def __str__(self):
-        return str(self.rating)
+# class Feedback(models.Model):
+#     rating=models.PositiveIntegerField(validators=[MinValueValidator(1),MaxValueValidator(5)])
+#     description=models.TextField(max_length=500)
+#     customerId=models.ForeignKey(Customer,on_delete=models.CASCADE)
+#     productId=models.ForeignKey(Product,on_delete=models.CASCADE,related_name="feedbacks")
+#     def __str__(self):
+#         return str(self.rating)
 
 class Images(models.Model):
     image=models.ImageField()

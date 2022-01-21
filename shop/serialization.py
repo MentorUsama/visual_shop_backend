@@ -3,7 +3,7 @@ from statistics import mode
 from django.db.models import fields
 from django.forms import IntegerField, models
 from rest_framework import serializers
-from .models import Category, Product,Images,Feedback, Tags,SubCategory
+from .models import Category, Product,Images, Tags,SubCategory
 from customer.models import Customer
 
 
@@ -26,15 +26,15 @@ class CustomerSerializer(serializers.ModelSerializer):
     class Meta:
         model=Customer
         fields=['id','name']
-class FeedbackSerializer(serializers.ModelSerializer):
-    customerId=CustomerSerializer()
-    class Meta:
-        model=Feedback
-        depth=1
-        fields=['id','rating','description','customerId']
+# class FeedbackSerializer(serializers.ModelSerializer):
+#     customerId=CustomerSerializer()
+#     class Meta:
+#         model=Feedback
+#         depth=1
+#         fields=['id','rating','description','customerId']
 class ProductSerializer(serializers.ModelSerializer):
     images=ImagesSerializer(many=True, read_only=True)
-    feedbacks=FeedbackSerializer(many=True,read_only=True)
+    # feedbacks=FeedbackSerializer(many=True,read_only=True)
     subCategoryId=SubcategorySerializer
     tags=TagsSerializer
     class Meta:

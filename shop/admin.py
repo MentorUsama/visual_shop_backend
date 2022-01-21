@@ -2,7 +2,7 @@ from django.contrib import admin
 from django.db import models
 from django.utils.html import escape
 from django.utils.html import mark_safe
-from .models import Category,SubCategory,Tags,Product,Feedback,Images
+from .models import Category,SubCategory,Tags,Product,Images
 
 
 
@@ -11,22 +11,22 @@ from .models import Category,SubCategory,Tags,Product,Feedback,Images
 class ImageAdminInline(admin.TabularInline):
     model=Images
     extra=1
-class FeedbackInline(admin.TabularInline):
-    model=Feedback
-    extra=1
-    def has_add_permission(self, request, obj=None):
-        return True
-    def has_delete_permission(self, request, obj=None):
-        return True
-    def has_change_permission(self, request, obj=None):
-        return True
+# class FeedbackInline(admin.TabularInline):
+#     model=Feedback
+#     extra=1
+#     def has_add_permission(self, request, obj=None):
+#         return True
+#     def has_delete_permission(self, request, obj=None):
+#         return True
+#     def has_change_permission(self, request, obj=None):
+#         return True
     # def get_readonly_fields(self, request, obj=None):
     #     return list(super().get_fields(request, obj))
 
 @admin.register(Product)
 class ProductAdmin(admin.ModelAdmin):
     list_display = ('Image','name','quantity','price','Category','SubCategory','sizes')
-    inlines=[ImageAdminInline,FeedbackInline]
+    inlines=[ImageAdminInline]
     # Extra Field
     def Category(self, obj: Product):
         return obj.subCategoryId.categoryId
