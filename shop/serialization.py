@@ -1,9 +1,11 @@
+from pyexpat import model
 from django.db.models import fields
 from django.forms import IntegerField, models
 from rest_framework import serializers
 
 from .models import Category, Product, Images, Tags, SubCategory
-from orders.models import OrderedProduct,Feedback
+from orders.models import OrderedProduct,Feedback,Order
+from customer.models import Customer
 from customer.models import Customer
 
 
@@ -30,12 +32,22 @@ class CustomerSerializer(serializers.ModelSerializer):
 class FeedbackSerializer(serializers.ModelSerializer):
     class Meta:
         model = Feedback
-        fields = "__all__"
+        fields = ['rating','description']
+class CustomerSerializer(serializers.ModelSerializer):
+    class Meta:
+        model=Customer
+        fields=['name','id']
+class OrderSerializer(serializers.ModelSerializer):
+    customerId=CustomerSerializer()
+    class Meta:
+        model=Order
+        fields=['customerId']
 class OrderedProductSerializer(serializers.ModelSerializer):
     feedback=FeedbackSerializer(many=False, read_only=True,source="feedbacks")
+    customer=OrderSerializer(source="orderId")
     class Meta:
         model = OrderedProduct
-        fields = ['feedback']
+        fields = ['feedback','customer']
 class ProductSerializer(serializers.ModelSerializer):
     images = ImagesSerializer(many=True, read_only=True)
     feedbacks = OrderedProductSerializer(many=True, read_only=True,source="orderedProducts")
