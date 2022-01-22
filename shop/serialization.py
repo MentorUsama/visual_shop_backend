@@ -32,7 +32,7 @@ class FeedbackSerializer(serializers.ModelSerializer):
         model = Feedback
         fields = "__all__"
 class OrderedProductSerializer(serializers.ModelSerializer):
-    feedback=FeedbackSerializer(many=True, read_only=True,source="feedbacks")
+    feedback=FeedbackSerializer(many=False, read_only=True,source="feedbacks")
     class Meta:
         model = OrderedProduct
         fields = ['feedback']
