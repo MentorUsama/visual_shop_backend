@@ -32,7 +32,7 @@ class CustomerSerializer(serializers.ModelSerializer):
 class FeedbackSerializer(serializers.ModelSerializer):
     class Meta:
         model = Feedback
-        fields = ['rating','description']
+        fields = ['rating','description','id']
 class CustomerSerializer(serializers.ModelSerializer):
     class Meta:
         model=Customer
