@@ -1,8 +1,3 @@
-import imp
-from operator import mod
-from pyexpat import model
-from statistics import mode
-from tkinter.tix import Tree
 from django.db.models import fields
 from django.forms import IntegerField, models
 from rest_framework import serializers
@@ -43,7 +38,7 @@ class OrderedProductSerializer(serializers.ModelSerializer):
         fields = ['feedbacks']
 class ProductSerializer(serializers.ModelSerializer):
     images = ImagesSerializer(many=True, read_only=True)
-    orderedProducts = OrderedProductSerializer(many=True, read_only=Tree)
+    orderedProducts = OrderedProductSerializer(many=True, read_only=True)
     subCategoryId = SubcategorySerializer
     tags = TagsSerializer
     class Meta:
