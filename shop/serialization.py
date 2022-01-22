@@ -32,13 +32,13 @@ class FeedbackSerializer(serializers.ModelSerializer):
         model = Feedback
         fields = "__all__"
 class OrderedProductSerializer(serializers.ModelSerializer):
-    feedbacks=FeedbackSerializer(many=True, read_only=True)
+    feedback=FeedbackSerializer(many=True, read_only=True,source="feedbacks")
     class Meta:
         model = OrderedProduct
-        fields = ['feedbacks']
+        fields = ['feedback']
 class ProductSerializer(serializers.ModelSerializer):
     images = ImagesSerializer(many=True, read_only=True)
-    orderedProducts = OrderedProductSerializer(many=True, read_only=True)
+    feedbacks = OrderedProductSerializer(many=True, read_only=True,source="orderedProducts")
     subCategoryId = SubcategorySerializer
     tags = TagsSerializer
     class Meta:
