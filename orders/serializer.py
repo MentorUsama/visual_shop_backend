@@ -1,3 +1,4 @@
+from statistics import mode
 from django.db import models
 from django.db.models import fields
 from .models import Complaints, Messages, Order,OrderedProduct,Complaints,Feedback
@@ -145,4 +146,9 @@ class GetAllOrdersSerializer(serializers.ModelSerializer):
 class CreateComplaintsSerializer(serializers.ModelSerializer):
     class Meta:
         model=Complaints
+        fields="__all__"
+# ============== FeedbackSerializer ========================
+class AddFeedbackSerializer(serializers.ModelSerializer):
+    class Meta:
+        model=Feedback
         fields="__all__"
