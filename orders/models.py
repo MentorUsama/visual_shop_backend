@@ -42,7 +42,7 @@ class OrderedProduct(models.Model):
     totalPrice = models.DecimalField(decimal_places=3, max_digits=8)
     colourSelected = models.CharField(max_length=50)
     sizeSelected = models.CharField(max_length=50)
-    productId = models.ForeignKey(Product, on_delete=models.PROTECT)
+    productId = models.ForeignKey(Product, on_delete=models.PROTECT,related_name="orderedProducts")
     orderId = models.ForeignKey(
         Order, on_delete=models.CASCADE, related_name="orderedProducts")
 
@@ -77,7 +77,7 @@ class Feedback(models.Model):
     description = models.TextField(max_length=500)
     customerId = models.ForeignKey(Customer, on_delete=models.CASCADE)
     orderedProductId = models.ForeignKey(
-        OrderedProduct, on_delete=models.CASCADE)
+        OrderedProduct, on_delete=models.CASCADE,related_name="feedbacks")
 
     def __str__(self):
         return str(self.rating)

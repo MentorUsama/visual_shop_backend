@@ -1,6 +1,6 @@
 from django.db import models
 from django.db.models import fields
-from .models import Complaints, Messages, Order,OrderedProduct,Complaints
+from .models import Complaints, Messages, Order,OrderedProduct,Complaints,Feedback
 from datetime import date
 from rest_framework import serializers
 from customer.models import City,Province
@@ -125,9 +125,19 @@ class ComplaintsSerializer(serializers.ModelSerializer):
     class Meta:
         model=Complaints
         fields="__all__"
+class FeedbackSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Feedback
+        fields = ['id','rating','description']
+class OrderedProductSerializer(serializers.ModelSerializer):
+    feedbacks=FeedbackSerializer(many=True, read_only=True)
+    class Meta:
+        model = OrderedProduct
+        fields = ['id','feedbacks','totalQuantity','totalPrice','colourSelected','sizeSelected','productId']
 class GetAllOrdersSerializer(serializers.ModelSerializer):
     cityId=CitySerializer()
     complaints=ComplaintsSerializer()
+    orderedProducts = OrderedProductSerializer(many=True, read_only=True)
     class Meta:
         model=Order
         fields="__all__"
