@@ -130,10 +130,10 @@ class FeedbackSerializer(serializers.ModelSerializer):
         model = Feedback
         fields = ['id','rating','description']
 class OrderedProductSerializer(serializers.ModelSerializer):
-    feedbacks=FeedbackSerializer(many=True, read_only=True)
+    feedback=FeedbackSerializer(many=False, read_only=True,source="feedbacks")
     class Meta:
         model = OrderedProduct
-        fields = ['id','feedbacks','totalQuantity','totalPrice','colourSelected','sizeSelected','productId']
+        fields = ['id','feedback','totalQuantity','totalPrice','colourSelected','sizeSelected','productId']
 class GetAllOrdersSerializer(serializers.ModelSerializer):
     cityId=CitySerializer()
     complaints=ComplaintsSerializer()

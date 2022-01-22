@@ -76,7 +76,7 @@ class Feedback(models.Model):
         validators=[MinValueValidator(1), MaxValueValidator(5)])
     description = models.TextField(max_length=500)
     customerId = models.ForeignKey(Customer, on_delete=models.CASCADE)
-    orderedProductId = models.ForeignKey(
+    orderedProductId = models.OneToOneField(
         OrderedProduct, on_delete=models.CASCADE,related_name="feedbacks")
 
     def __str__(self):
