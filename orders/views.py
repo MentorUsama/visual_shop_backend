@@ -8,6 +8,8 @@ from django.http import Http404
 from rest_framework.generics import ListAPIView
 from rest_framework.permissions import IsAuthenticated
 from .models import Cuopen,Order,Complaints, OrderedProduct
+from shop.models import Product
+from shop.serialization import ProductSerializer
 # from rest_framework import BasicAuthentication
 from visualshop.utility.request import SerilizationFailed,Success,NotFound,unAuthrized
 
@@ -132,6 +134,10 @@ class ProvideFeedback(APIView,IsAuthenticated):
         data=request.data
         if(request.user.is_anonymous):
             return unAuthrized({"detail":"You are not Autherized to access"})
+        if data['productId']==None:
+            return SerilizationFailed({"productId":"Please Provide Product Id"})
+
+        # Submitting The Feedback
         submittedBy=request.user
         serializer=AddFeedbackSerializer(data=data)
         if(serializer.is_valid()):
@@ -139,6 +145,9 @@ class ProvideFeedback(APIView,IsAuthenticated):
             if(orderBy!=submittedBy.id):
                 return unAuthrized({"detail":"You Are Not Authorize To Submit Feedback"})
             serializer.save()
-            return Success(serializer.data)
+            # Getting The Product Detail
+            product=Product.objects.get(id=data['productId'])
+            prooductSerializer=ProductSerializer(product)
+            return Success(prooductSerializer.data)
         else:
             return SerilizationFailed(serializer.errors)
