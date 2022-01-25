@@ -147,7 +147,7 @@ class ProvideFeedback(APIView,IsAuthenticated):
             serializer.save()
             # Getting The Product Detail
             product=Product.objects.get(id=data['productId'])
-            prooductSerializer=ProductSerializer(product)
+            prooductSerializer=ProductSerializer(product,context={'request': request})
             return Success(prooductSerializer.data)
         else:
             return SerilizationFailed(serializer.errors)
