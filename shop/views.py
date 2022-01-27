@@ -8,7 +8,7 @@ from django.db.models import Count
 # getting models
 from .models import Product,Tags,Category
 # from rest_framework import BasicAuthentication
-from visualshop.utility.request import Success
+from visualshop.utility.request import Success,SerilizationFailed
 # Create your views here.
 
 
@@ -107,3 +107,12 @@ class GetAllCategories(ListAPIView):
     queryset =  Category.objects.all()
     serializer_class = GetAllCategoriesSerializer
     pagination_class= AllDataPagination
+
+class GetListOfProducts(APIView):
+    def post(self, request, format=None):
+        data = request.data
+        if not "productIdList" in data.keys():
+            return SerilizationFailed({"productIdList":"Please Provide The List Of Product To Fetch"})
+        products=Product.objects.filter(id__in=data['productIdList'])
+        serializer=ProductSerializer(products,many=True,context={'request': request})
+        return Success(serializer.data)
