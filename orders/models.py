@@ -40,8 +40,8 @@ class Order(models.Model):
 class OrderedProduct(models.Model):
     totalQuantity = models.IntegerField(validators=[MinValueValidator(1)])
     totalPrice = models.DecimalField(decimal_places=3, max_digits=8)
-    colourSelected = models.CharField(max_length=50)
-    sizeSelected = models.CharField(max_length=50)
+    colourSelected = models.CharField(max_length=50,blank=True,null=True)
+    sizeSelected = models.CharField(max_length=50,blank=True,null=True)
     productId = models.ForeignKey(Product, on_delete=models.PROTECT,related_name="orderedProducts")
     orderId = models.ForeignKey(
         Order, on_delete=models.CASCADE, related_name="orderedProducts")
