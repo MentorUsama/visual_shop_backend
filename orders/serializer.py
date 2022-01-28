@@ -1,9 +1,11 @@
+from itertools import product
 from statistics import mode
 from django.db import models
 from django.db.models import fields
 from .models import Complaints, Messages, Order,OrderedProduct,Complaints,Feedback
 from datetime import date
 from rest_framework import serializers
+from shop.models import Product,Images
 from customer.models import City,Province
 
 
@@ -107,6 +109,27 @@ class CheckOrderSerializer(serializers.ModelSerializer):
         return {"totalPrice":orderPrices,"discountPrice":discout,'cuopenId':self.validated_data['cuopenId'].id}
 
 # ============= Serializer For Getting All Orders =============
+class CategorySerializer(serializers.ModelSerializer):
+    class Meta:
+        fields = "__all__"
+class SubcategorySerializer(serializers.ModelSerializer):
+    categoryId = CategorySerializer
+    class Meta:
+        fields = "__all__"
+class ImagesSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Images
+        fields = ['id', 'imageColor', 'image']
+class ProductSerializer(serializers.ModelSerializer):
+    images = ImagesSerializer(many=True, read_only=True)
+    subCategoryId = SubcategorySerializer
+    
+    class Meta:
+        model = Product
+        depth = 1
+        fields = ['id','name','quantity','price','description','sizes','subCategoryId','images']
+
+
 class ProvinceSerializer(serializers.ModelSerializer):
     class Meta:
         model=Province
@@ -116,6 +139,8 @@ class CitySerializer(serializers.ModelSerializer):
     class Meta:
         model=City
         fields=['name','provinceId']
+
+
 class MessageSerializer(serializers.ModelSerializer):
     class Meta:
         model=Messages
@@ -126,15 +151,20 @@ class ComplaintsSerializer(serializers.ModelSerializer):
     class Meta:
         model=Complaints
         fields="__all__"
+
+
 class FeedbackSerializer(serializers.ModelSerializer):
     class Meta:
         model = Feedback
         fields = ['id','rating','description']
 class OrderedProductSerializer(serializers.ModelSerializer):
     feedback=FeedbackSerializer(many=False, read_only=True,source="feedbacks")
+    productId=ProductSerializer(read_only=True)
     class Meta:
         model = OrderedProduct
         fields = ['id','feedback','totalQuantity','totalPrice','colourSelected','sizeSelected','productId']
+
+
 class GetAllOrdersSerializer(serializers.ModelSerializer):
     cityId=CitySerializer()
     complaints=ComplaintsSerializer()
