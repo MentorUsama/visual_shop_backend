@@ -39,16 +39,14 @@ class CreateOrder(APIView,IsAuthenticated):
             return Success(order.data)
         else:
             return SerilizationFailed(order.errors)
-class ValidateCuopen(APIView,IsAuthenticated):
+class ValidateCuopen(APIView):
     def get_object(self, pk):        
         try:
             cuopen=Cuopen.objects.get(cuopenCode=pk)
             return cuopen
         except Cuopen.DoesNotExist:
             raise Http404
-    def get(self,request,cupenCode):
-        if(request.user.is_anonymous):
-            return unAuthrized({"detail":"You are not Autherized to access"})
+    def post(self,request,cupenCode):
         try:
             cupen=self.get_object(cupenCode)
         except Http404:
