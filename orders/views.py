@@ -10,6 +10,9 @@ from rest_framework.permissions import IsAuthenticated
 from .models import Cuopen,Order,Complaints, OrderedProduct
 from shop.models import Product
 from shop.serialization import ProductSerializer
+from visualshop.settings import STRIPE_SECRET_KEY
+import stripe
+stripe.api_key=STRIPE_SECRET_KEY
 # from rest_framework import BasicAuthentication
 from visualshop.utility.request import SerilizationFailed,Success,NotFound,unAuthrized
 
@@ -35,8 +38,20 @@ class CreateOrder(APIView,IsAuthenticated):
         # Getting the order
         order=OrderSerializer(data=data)
         if(order.is_valid()):
-            order.save()
-            return Success(order.data)
+            # Making The Payment
+            intent = stripe.PaymentIntent.create(
+                amount=100,
+                currency='USD',
+                automatic_payment_methods={'enabled': True,},
+            )
+            # Saving The Order
+            data['strip_client_id'] = intent['client_secret']
+            order_with_Strip=OrderSerializer(data=data)
+            if order_with_Strip.is_valid():
+                order_with_Strip.save()
+                return Success(order_with_Strip.data)
+            else:
+                return SerilizationFailed(order_with_Strip.errors)
         else:
             return SerilizationFailed(order.errors)
 class ValidateCuopen(APIView):

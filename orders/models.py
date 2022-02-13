@@ -1,3 +1,4 @@
+from tkinter.tix import Tree
 from django.db import models
 from django.core.validators import MinValueValidator, RegexValidator, MaxValueValidator
 from customer.models import Customer, City
@@ -26,12 +27,17 @@ class Order(models.Model):
     receiverName = models.CharField(max_length=50)
     receiverContact = models.CharField(max_length=11, validators=[RegexValidator(
         "^[0-9]{11}$", 'Contact number should consist of 11 digits')])
-    orderStatus = models.CharField(max_length=50, default="paymentPending", choices=(
-        ("pending", "PENDING"), ("received", "RECEIVED"), ("paymentPending", "PAYMENTPENDING")))
+    orderStatus = models.CharField(max_length=50, default="PAYMENTPENDING", choices=(
+        ("shipping", "SHIPPING"), 
+        ("received", "RECEIVED"), 
+        ("Payment pending", "PAYMENTPENDING"),
+        ("canceled", "CANCELED")
+    ))
     cuopenId = models.ForeignKey(
         Cuopen, on_delete=models.SET_NULL, null=True, blank=True)
     customerId = models.ForeignKey(Customer, on_delete=models.PROTECT)
     cityId = models.ForeignKey(City, on_delete=models.PROTECT)
+    strip_client_id = models.CharField(max_length=500,blank=True,null=True)
 
     def __str__(self):
         return f'{self.receiverName} : {self.orderDate}'
