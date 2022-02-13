@@ -35,7 +35,7 @@ class OrderSerializer(serializers.ModelSerializer):
     totalPrice=serializers.DecimalField(decimal_places=3,max_digits=8,required=False)
     class Meta:
         model=Order
-        fields=['totalPrice','shippingAddress','receiverName','receiverContact','cuopenId','customerId','cityId','orderedProducts','orderStatus']
+        fields=['totalPrice','shippingAddress','receiverName','receiverContact','cuopenId','customerId','cityId','orderedProducts','orderStatus','strip_client_id']
         extra_kwargs = {'orderStatus': {'read_only': True}, }
     def validate_orderedProducts(self, attrs):
         if len(attrs) == 0:

@@ -240,8 +240,9 @@ JAZZMIN_SETTINGS = {
 
 
 
-
-
+# Secret keys
+STRIPE_PUBLISHABLE_KEY = config('STRIPE_PUBLISHABLE_KEY')
+STRIPE_SECRET_KEY  = config('STRIPE_SECRET_KEY')
 # Default primary key field type
 # https://docs.djangoproject.com/en/3.2/ref/settings/#default-auto-field
 
