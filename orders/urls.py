@@ -10,5 +10,6 @@ urlpatterns = [
     path('giveFeedback/',views.ProvideFeedback().as_view(),name="giveFeedback"),
     path('addComplaint/<int:orderId>',views.AddComplaint.as_view(),name="addComplaint"),
     path('sendMessage/<int:orderId>',views.AddMessage.as_view(),name="sendMessage"),
-    path('confirmOrderPayment/',views.ConfirmOrderPayment.as_view(),name="confirmorderpayment")
+    path('confirmOrderPayment/',views.ConfirmOrderPayment.as_view(),name="confirmorderpayment"),
+    path('cancelOrder/',views.CancelOrderPayment.as_view(),name="cancelorder")
 ]

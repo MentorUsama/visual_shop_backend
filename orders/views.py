@@ -87,6 +87,43 @@ class ConfirmOrderPayment(APIView,IsAuthenticated):
         else:
             return Success({'status':order.orderStatus})
 
+class CancelOrderPayment(APIView,IsAuthenticated):
+    def get_object(self, pk):        
+        try:
+            customer=Customer.objects.get(user=pk)
+            return customer
+        except Customer.DoesNotExist:
+            raise Http404
+    def post(self, request, format=None):
+        if(request.user.is_anonymous):
+            return unAuthrized({"detail":"You are not Autherized to access"})
+        # Passed Data
+        data=request.data
+        user=request.user
+        customer=self.get_object(user)
+        if 'order_id' not in data:
+            return SerilizationFailed({'order_id':['Please provide valid order_id']})
+        try:
+            order=Order.objects.get(id=data['order_id'],customerId=customer.id)
+        except Order.DoesNotExist:
+            return SerilizationFailed({'order_id':['Please provide valid order_id']})
+
+        if order.orderStatus=='PAYMENTPENDING': # If the product is not purchased yet then you can cancel it.
+            # Checking if the order is purchased or not from the stripe side
+            intent = stripe.PaymentIntent.retrieve(
+                order.strip_client_id
+            )
+            if intent['status']=='requires_payment_method': # if not purchased
+                order.orderStatus='canceled'
+                order.save()
+                return Success({'status':"cannceled"})
+            else:
+                if intent['status']=='succeeded':
+                    order.orderStatus='shipping'
+                    order.save()
+                return SerilizationFailed({'order_id':['You can not cancel the product which is already purchase shipped, canceled or payment in progress.']})
+        else:
+            return SerilizationFailed({'order_id':['You can not cancel the product which is already purchase shipped or canceled.']})
 
 class ValidateCuopen(APIView):
     def get_object(self, pk):        
