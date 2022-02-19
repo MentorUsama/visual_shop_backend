@@ -37,6 +37,7 @@ class Order(models.Model):
     customerId = models.ForeignKey(Customer, on_delete=models.PROTECT)
     cityId = models.ForeignKey(City, on_delete=models.PROTECT)
     strip_client_id = models.CharField(max_length=500,blank=True,null=True)
+    stripe_client_secret=models.CharField(max_length=500,blank=True,null=True)
 
     def __str__(self):
         return f'{self.receiverName} : {self.orderDate}'

@@ -1,3 +1,4 @@
+from django.shortcuts import get_object_or_404
 from rest_framework import serializers
 from rest_framework.response import Response
 from rest_framework.pagination import PageNumberPagination
@@ -45,7 +46,8 @@ class CreateOrder(APIView,IsAuthenticated):
                 automatic_payment_methods={'enabled': True,},
             )
             # Saving The Order
-            data['strip_client_id'] = intent['client_secret']
+            data['stripe_client_secret'] = intent['client_secret']
+            data['strip_client_id'] = intent['id']
             order_with_Strip=OrderSerializer(data=data)
             if order_with_Strip.is_valid():
                 order_with_Strip.save()
@@ -54,6 +56,38 @@ class CreateOrder(APIView,IsAuthenticated):
                 return SerilizationFailed(order_with_Strip.errors)
         else:
             return SerilizationFailed(order.errors)
+class ConfirmOrderPayment(APIView,IsAuthenticated):
+    def get_object(self, pk):        
+        try:
+            customer=Customer.objects.get(user=pk)
+            return customer
+        except Customer.DoesNotExist:
+            raise Http404
+    def post(self, request, format=None):
+        if(request.user.is_anonymous):
+            return unAuthrized({"detail":"You are not Autherized to access"})
+        # Passed Data
+        data=request.data
+        user=request.user
+        customer=self.get_object(user)
+        if 'order_id' not in data:
+            return SerilizationFailed({'order_id':['Please provide valid order_id']})
+        try:
+            order=Order.objects.get(id=data['order_id'],customerId=customer.id)
+        except Order.DoesNotExist:
+            return SerilizationFailed({'order_id':['Please provide valid order_id']})
+
+        intent = stripe.PaymentIntent.retrieve(
+            order.strip_client_id
+        )
+        if intent['status']=='succeeded':
+            order.orderStatus='shipping'
+            order.save()
+            return Success({'status':"shipping"})
+        else:
+            return Success({'status':order.orderStatus})
+
+
 class ValidateCuopen(APIView):
     def get_object(self, pk):        
         try:

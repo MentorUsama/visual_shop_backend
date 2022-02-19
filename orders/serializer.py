@@ -35,8 +35,11 @@ class OrderSerializer(serializers.ModelSerializer):
     totalPrice=serializers.DecimalField(decimal_places=3,max_digits=8,required=False)
     class Meta:
         model=Order
-        fields=['totalPrice','shippingAddress','receiverName','receiverContact','cuopenId','customerId','cityId','orderedProducts','orderStatus','strip_client_id']
-        extra_kwargs = {'orderStatus': {'read_only': True}, }
+        fields=['id','totalPrice','shippingAddress','receiverName','receiverContact','cuopenId','customerId','cityId','orderedProducts','orderStatus','stripe_client_secret','strip_client_id']
+        extra_kwargs = {
+            'orderStatus': {'read_only': True},
+            'strip_client_id':{"write_only":True} 
+        }
     def validate_orderedProducts(self, attrs):
         if len(attrs) == 0:
             raise serializers.ValidationError('At least One Product is Required')
@@ -171,7 +174,7 @@ class GetAllOrdersSerializer(serializers.ModelSerializer):
     orderedProducts = OrderedProductSerializer(many=True, read_only=True)
     class Meta:
         model=Order
-        fields="__all__"
+        exclude = ('strip_client_id', )
 # ============== Creating Complaint ========================
 class CreateComplaintsSerializer(serializers.ModelSerializer):
     class Meta:
