@@ -3,12 +3,12 @@ from rest_framework import serializers
 from rest_framework.response import Response
 from rest_framework.pagination import PageNumberPagination
 from rest_framework.views import APIView
-from  .serializer import MessageSerializer, OrderSerializer,CheckOrderSerializer,GetAllOrdersSerializer,CreateComplaintsSerializer,AddFeedbackSerializer
+from  .serializer import MessageSerializer, OrderSerializer,CheckOrderSerializer,GetAllOrdersSerializer,CreateComplaintsSerializer,AddFeedbackSerializer,ComplaintsSerializer
 from customer.models import Customer
 from django.http import Http404
 from rest_framework.generics import ListAPIView
 from rest_framework.permissions import IsAuthenticated
-from .models import Cuopen,Order,Complaints, OrderedProduct
+from .models import Cuopen,Order,Complaints, OrderedProduct,Messages
 from shop.models import Product
 from shop.serialization import ProductSerializer
 from visualshop.settings import STRIPE_SECRET_KEY
@@ -167,12 +167,18 @@ class GetAllOrders(ListAPIView,IsAuthenticated):
         user = self.request.user
         customer=self.get_object(user)
         return Order.objects.filter(customerId=customer.id)
-class AddComplaint(APIView,IsAuthenticated):
+class ComplaintView(APIView,IsAuthenticated):
     def get_object(self, user,orderId):        
         try:
             order=Order.objects.get(customerId__user=user,id=orderId)
             return order
         except Order.DoesNotExist:
+            raise Http404
+    def get_Customer(self, pk):        
+        try:
+            customer=Customer.objects.get(user=pk)
+            return customer
+        except Customer.DoesNotExist:
             raise Http404
     def post(self,request,orderId):
         if(request.user.is_anonymous):
@@ -188,6 +194,19 @@ class AddComplaint(APIView,IsAuthenticated):
             return Success(complaintSerializer.data);
         else:
             return SerilizationFailed(complaintSerializer.errors)
+        
+    def get(self,request):
+        parameters = request.GET.dict()
+        user = request.user
+        if 'complaint_id' not in parameters:
+            return SerilizationFailed({'complaint_id':['Please provide complaint id to get detail']})
+        customer=self.get_Customer(user)
+        try:
+            complaints = Complaints.objects.get(id=parameters['complaint_id'],orderId__customerId=customer)
+        except:
+            return SerilizationFailed({'complaint_id':['Complaint not found']})
+        serialized_data = ComplaintsSerializer(complaints)
+        return Success(serialized_data.data)
 class AddMessage(APIView,IsAuthenticated):
     def get_object(self, user,orderId):      
         try:
