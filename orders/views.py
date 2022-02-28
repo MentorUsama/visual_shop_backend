@@ -36,6 +36,14 @@ class CreateOrder(APIView,IsAuthenticated):
         customer=self.get_object(user)
         data['customerId']=customer.id
 
+        # Checking if the coupen was used by customer before
+        if 'cuopenId' in data:
+            if data['cuopenId']!=None:
+                order_with_given_coupen=Order.objects.filter(cuopenId__id=data['cuopenId'],customerId=customer)
+                if len(order_with_given_coupen) != 0:
+                    return SerilizationFailed({"cuopenCode":["This coupen has already been used"]})
+
+
         # Getting the order
         order=OrderSerializer(data=data)
         if(order.is_valid()):
@@ -125,18 +133,40 @@ class CancelOrderPayment(APIView,IsAuthenticated):
         else:
             return SerilizationFailed({'order_id':['You can not cancel the product which is already purchase shipped or canceled.']})
 
-class ValidateCuopen(APIView):
+class ValidateCuopen(APIView,IsAuthenticated):
     def get_object(self, pk):        
         try:
             cuopen=Cuopen.objects.get(cuopenCode=pk)
             return cuopen
         except Cuopen.DoesNotExist:
             raise Http404
+    def get_customer(self, pk):        
+        try:
+            customer=Customer.objects.get(user=pk)
+            return customer
+        except Customer.DoesNotExist:
+            raise Http404
     def post(self,request,cupenCode):
+        # validating the customer
+        if(request.user.is_anonymous):
+            return unAuthrized({"detail":"You are not Autherized to access"})
+        user=request.user
+        try:
+            customer=self.get_customer(user)
+        except Http404:
+            return unAuthrized({"detail":"No customer found with given credential"})
+
+        # Getting the cuopen
         try:
             cupen=self.get_object(cupenCode)
         except Http404:
             return SerilizationFailed({"cuopenCode":["No Coupen Found"]})
+
+        # Checking if the coupen was used by customer before
+        order_with_given_coupen=Order.objects.filter(cuopenId=cupen,customerId=customer)
+        if len(order_with_given_coupen) != 0:
+            return SerilizationFailed({"cuopenCode":["This coupen has already been used"]})
+
         # Checking the cuopen
         data=request.data
         data['cuopenId']=cupen.id
