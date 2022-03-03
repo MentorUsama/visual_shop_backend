@@ -5,19 +5,27 @@ from .models import Cuopen, Order, Messages, Complaints, OrderedProduct
 
 class OrderedAdminInline(admin.TabularInline):
     model = OrderedProduct
-    extra = 1
+    def has_add_permission(self, request, obj=None):
+        return False
+    def has_delete_permission(self, request, obj=None):
+        return False
+    def has_update_permission(self, request, obj=None):
+        return False
+    def has_change_permission(self, request, obj=None):
+        return False
 
 
 @admin.register(Order)
 class OrderAdmin(admin.ModelAdmin):
-    readonly_fields = ('id',)
+    list_display = ('id','totalPrice','status','orderDate')
+    readonly_fields = ('id','orderDate','totalPrice','shippingAddress','receiverName','receiverContact','cuopenId','customerId','cityId','strip_client_id','stripe_client_secret')
     inlines = [OrderedAdminInline]
     def has_add_permission(self, request, obj=None):
         return False
     def has_delete_permission(self, request, obj=None):
-        return True
-    def has_change_permission(self, request, obj=None):
         return False
+    def status(self, obj):
+        return obj.get_orderStatus_display()
 
 
 class MessageAdminInline(admin.TabularInline):

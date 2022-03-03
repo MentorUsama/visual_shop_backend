@@ -10,13 +10,16 @@ class Category(models.Model):
     name=models.CharField(max_length=20)
     def __str__(self):
         return self.name
+    class Meta:
+        verbose_name_plural = "Categories"
     
 
 class SubCategory(models.Model):
     name=models.CharField(max_length=20)
-    categoryId=models.ForeignKey(Category,on_delete=models.PROTECT,related_name="Subcategories")
+    categoryId=models.ForeignKey(Category,on_delete=models.PROTECT,related_name="Subcategories",verbose_name='Category')
     class Meta:
         ordering = ['categoryId'] #Sort in desc order
+        verbose_name_plural = "Sub Categories"
     def __str__(self):
         return f'{self.categoryId} > {self.name}'
 class Tags(models.Model):
@@ -26,6 +29,9 @@ class Tags(models.Model):
     def save(self, *args, **kwargs):
         self.name = self.name.lower()
         return super(Tags, self).save(*args, **kwargs)
+    class Meta:
+        verbose_name_plural = "Tags"
+        
 
 
 
@@ -37,7 +43,7 @@ class Product(models.Model):
     description=models.TextField(max_length=800)
     sizes=models.CharField(max_length=50,blank=True,null=True,validators=[RegexValidator(regex="^([a-z0-9\s]+,)*([a-z0-9\s]+){1}$",message="The sizes must be comma seperated",flags=re.I)])
     tags=models.ManyToManyField(Tags)
-    subCategoryId=models.ForeignKey(SubCategory,on_delete=models.PROTECT)
+    subCategoryId=models.ForeignKey(SubCategory,on_delete=models.PROTECT,verbose_name='Subcategory')
 
 
     def __str__(self):
@@ -49,6 +55,7 @@ class Product(models.Model):
         super(Product, self).save(*args, **kwargs)
     class Meta:
         ordering = ['-id']
+        verbose_name_plural = "Products"
 
 
 
@@ -64,8 +71,8 @@ class Product(models.Model):
 
 class Images(models.Model):
     image=models.ImageField()
-    productId=models.ForeignKey(Product,on_delete=models.CASCADE,null=False,blank=False,related_name='images')
-    imageColor=models.CharField(max_length=20,blank=True,null=True)
+    productId=models.ForeignKey(Product,on_delete=models.CASCADE,null=False,blank=False,related_name='images',verbose_name='Product')
+    imageColor=models.CharField(max_length=20,blank=True,null=True,verbose_name='Color')
 
 
 
@@ -94,3 +101,4 @@ def auto_delete_file_on_change(sender, instance, **kwargs):
     if not old_file == new_file:
         if os.path.isfile(old_file.path):
             os.remove(old_file.path)
+            

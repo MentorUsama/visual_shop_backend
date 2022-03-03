@@ -3,7 +3,9 @@ from django.db import models
 from django.utils.html import escape
 from django.utils.html import mark_safe
 from .models import Category,SubCategory,Tags,Product,Images
-
+from django_rest_passwordreset.models import ResetPasswordToken
+from django.contrib.auth.models import Group
+from django.contrib.auth.models import User
 
 
 
@@ -11,18 +13,6 @@ from .models import Category,SubCategory,Tags,Product,Images
 class ImageAdminInline(admin.TabularInline):
     model=Images
     extra=1
-# class FeedbackInline(admin.TabularInline):
-#     model=Feedback
-#     extra=1
-#     def has_add_permission(self, request, obj=None):
-#         return True
-#     def has_delete_permission(self, request, obj=None):
-#         return True
-#     def has_change_permission(self, request, obj=None):
-#         return True
-    # def get_readonly_fields(self, request, obj=None):
-    #     return list(super().get_fields(request, obj))
-
 @admin.register(Product)
 class ProductAdmin(admin.ModelAdmin):
     list_display = ('Image','name','quantity','price','Category','SubCategory','sizes')
@@ -39,4 +29,16 @@ class ProductAdmin(admin.ModelAdmin):
         except:
             return "Not Found"
 # ===================== Registering the rest of the table =========================
-admin.site.register([Category,SubCategory,Tags])
+@admin.register(Category)
+class CategoryAdmin(admin.ModelAdmin):
+    list_display = ('id','name')
+@admin.register(SubCategory)
+class SubCategoryAdmin(admin.ModelAdmin):
+    list_display = ('id','name')
+@admin.register(Tags)
+class TagsAdmin(admin.ModelAdmin):
+    list_display = ('id','name')
+
+admin.site.unregister(ResetPasswordToken)
+admin.site.unregister(Group)
+admin.site.unregister(User)

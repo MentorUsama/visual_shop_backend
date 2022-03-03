@@ -9,5 +9,11 @@ class CustomerAdmin(admin.ModelAdmin):
     def city(self, obj: Customer):
         return obj.cityId
 
+@admin.register(Province)
+class ProvinceAdmin(admin.ModelAdmin):
+    list_display = ('id','name')
 
-admin.site.register([Province, City])
+@admin.register(City)
+class CityAdmin(admin.ModelAdmin):
+    list_display = ('id','name')
+    

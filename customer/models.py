@@ -18,7 +18,7 @@ class Province(models.Model):
 
 class City(models.Model):
     name = models.CharField(max_length=20)
-    provinceId = ForeignKey(Province, on_delete=models.CASCADE,related_name="cities")
+    provinceId = ForeignKey(Province, on_delete=models.CASCADE,related_name="cities",verbose_name='Province')
     def __str__(self):
         return self.name
 
@@ -32,7 +32,7 @@ class Customer(models.Model):
     cardNumber = models.CharField(blank=True, max_length=30)
     cardExpiryDate = models.DateField(null=True, blank=True)
     CVC = models.IntegerField(null=True, blank=True)
-    cityId = models.ForeignKey(City, on_delete=models.SET_NULL, null=True, blank=True)
+    cityId = models.ForeignKey(City, on_delete=models.SET_NULL, null=True, blank=True,verbose_name='City')
     authType=models.CharField(max_length=20,default="email",choices=(("email","EMAIL"),("google","GOOGLE")))
     def __str__(self):
         return ""+self.name
