@@ -3,7 +3,7 @@ from rest_framework import serializers
 from rest_framework.response import Response
 from rest_framework.pagination import PageNumberPagination
 from rest_framework.views import APIView
-from  .serializer import MessageSerializer, OrderSerializer,CheckOrderSerializer,GetAllOrdersSerializer,CreateComplaintsSerializer,AddFeedbackSerializer,ComplaintsSerializer
+from  .serializer import MessageSerializer, ValidateOrderSerializer,CheckOrderSerializer,GetAllOrdersSerializer,CreateComplaintsSerializer,AddFeedbackSerializer,ComplaintsSerializer
 from customer.models.Customer import Customer
 from django.http import Http404
 from rest_framework.generics import ListAPIView
@@ -20,10 +20,17 @@ from shop.serialization import ProductSerializer
 from visualshop.settings import STRIPE_SECRET_KEY
 import stripe
 stripe.api_key=STRIPE_SECRET_KEY
+from orders.models.stripe import Stripe
 # from rest_framework import BasicAuthentication
 from visualshop.utility.request import SerilizationFailed,Success,NotFound,unAuthrized
 
 # Create your views here.
+def TotalPrice(orderedProducts):
+    total=0
+    for orderedProduct_data in orderedProducts:
+        price=orderedProduct_data['totalQuantity']*orderedProduct_data['productId'].price
+        total=total+price
+    return total
 class CreateOrder(APIView,IsAuthenticated):
     def get_object(self, pk):        
         try:
@@ -34,6 +41,7 @@ class CreateOrder(APIView,IsAuthenticated):
     def post(self, request, format=None):
         if(request.user.is_anonymous):
             return unAuthrized({"detail":"You are not Autherized to access"})
+
         # Passed Data
         data=request.data
 
@@ -49,27 +57,58 @@ class CreateOrder(APIView,IsAuthenticated):
                 if len(order_with_given_coupen) != 0:
                     return SerilizationFailed({"cuopenCode":["This coupen has already been used"]})
 
+        # validating the order data
+        serialized_order=ValidateOrderSerializer(data=data)
 
-        # Getting the order
-        order=OrderSerializer(data=data)
-        if(order.is_valid()):
-            # Making The Payment
-            intent = stripe.PaymentIntent.create(
-                amount=100,
-                currency='USD',
-                automatic_payment_methods={'enabled': True,},
-            )
-            # Saving The Order
-            data['stripe_client_secret'] = intent['client_secret']
-            data['strip_client_id'] = intent['id']
-            order_with_Strip=OrderSerializer(data=data)
-            if order_with_Strip.is_valid():
-                order_with_Strip.save()
-                return Success(order_with_Strip.data)
-            else:
-                return SerilizationFailed(order_with_Strip.errors)
+        if(serialized_order.is_valid()):
+            # Getting the validated data (Note: below line will not save the data in DB)
+            validated_data=serialized_order.save()
+
+            # Getting the ordered Products
+            ordered_products = validated_data.pop('orderedProducts')
+
+            # Calculating the Total Price
+            orderPrices=TotalPrice(ordered_products)
+
+            # Applying the coupen
+            if(validated_data['cuopenId']!=None):
+                if(orderPrices<validated_data['cuopenId'].minPurchase):
+                    return SerilizationFailed({"cuopenId":["Total Purchase must be greater then "+str(validated_data['cuopenId'].minPurchase)+""]})
+                discout=(validated_data['cuopenId'].discountPercentage*orderPrices)/100
+                orderPrices=orderPrices-discout
+                validated_data['cuopenId'].totalQuantity=validated_data['cuopenId'].totalQuantity-1
+                validated_data['cuopenId'].save()
+
+            # Setting up some field based on order type
+            if validated_data['paymentMethod']=="CARD":
+                orderStatus='Payment_pending'
+                intent = stripe.PaymentIntent.create(
+                    amount=int(orderPrices*100),
+                    currency='USD',
+                    automatic_payment_methods={'enabled': True,},
+                ) 
+                strip = Stripe.objects.create(strip_client_id=intent['id'],stripe_client_secret=intent['client_secret'])
+            elif validated_data['paymentMethod']=="CASH":
+                orderStatus='shipping'
+                strip=None
+
+            # Creating The order
+            order = Order.objects.create(**validated_data,totalPrice=orderPrices,orderStatus=orderStatus,stripe=strip)
+           
+            # Creating the orderedProduct
+            for (orderedProduct_data) in (ordered_products):
+                totalPrice=orderedProduct_data['productId'].price*orderedProduct_data['totalQuantity']
+                OrderedProduct.objects.create(orderId=order, **orderedProduct_data,totalPrice=totalPrice)
+            
+            # Decreasing The quantity of product as it has been purchased
+            for (orderedProduct_data) in (ordered_products):
+                product=orderedProduct_data['productId']
+                product.quantity=product.quantity-orderedProduct_data['totalQuantity']
+                product.save()
+            response=GetAllOrdersSerializer(order)
+            return Success(response.data)
         else:
-            return SerilizationFailed(order.errors)
+            return SerilizationFailed(serialized_order.errors)
 class ConfirmOrderPayment(APIView,IsAuthenticated):
     def get_object(self, pk):        
         try:

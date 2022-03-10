@@ -3,6 +3,7 @@ from orders.models.Cuopen import Cuopen
 from customer.models.Customer import Customer
 from customer.models.City import City
 from django.core.validators import MinValueValidator, RegexValidator, MaxValueValidator
+from orders.models.stripe import Stripe
 
 
 class Order(models.Model):
@@ -12,18 +13,21 @@ class Order(models.Model):
     receiverName = models.CharField(max_length=50,verbose_name='Name')
     receiverContact = models.CharField(max_length=11,verbose_name='Contact', validators=[RegexValidator(
         "^[0-9]{11}$", 'Contact number should consist of 11 digits')])
-    orderStatus = models.CharField(max_length=50, verbose_name='Status',default="PAYMENTPENDING", choices=(
+    orderStatus = models.CharField(max_length=20, verbose_name='Status', choices=(
         ("shipping", "SHIPPING"), 
         ("received", "RECEIVED"), 
-        ("Payment pending", "PAYMENTPENDING"),
+        ("Payment_pending", "PAYMENTPENDING"),
         ("canceled", "CANCELED")
+    ))
+    paymentMethod = models.CharField(max_length=10, verbose_name='Payment Method', choices=(
+        ("CARD", "CARD"), 
+        ("CASH", "CASH")
     ))
     cuopenId = models.ForeignKey(
         Cuopen, on_delete=models.SET_NULL, null=True, blank=True, verbose_name='Cuopen')
     customerId = models.ForeignKey(Customer, on_delete=models.PROTECT,verbose_name='Customer')
     cityId = models.ForeignKey(City, on_delete=models.PROTECT,verbose_name='City')
-    strip_client_id = models.CharField(max_length=500,blank=True,null=True,verbose_name='Strip id')
-    stripe_client_secret=models.CharField(max_length=500,blank=True,null=True,verbose_name='Strip secret')
+    stripe = models.ForeignKey(Stripe, on_delete=models.CASCADE,verbose_name='Stripe',null=True)
 
     def __str__(self):
         return f'{self.receiverName} : {self.orderDate}'

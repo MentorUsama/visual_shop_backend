@@ -1,3 +1,4 @@
+from dataclasses import fields
 from orders.models.Complaints import Complaints
 from orders.models.Messages import Messages
 from orders.models.Order import Order
@@ -10,6 +11,7 @@ from shop.models.Product import Product
 from shop.models.Images import Images
 from customer.models.City import City
 from customer.models.Province import Province
+from orders.models.stripe import Stripe
 
 
 
@@ -18,7 +20,7 @@ from customer.models.Province import Province
 # ============= Utitlity Function for Orders =============
 def checkAvailableQuantity(orderedProducts):
     for orderedProduct_data in orderedProducts:
-        if(orderedProduct_data['productId'].quantity<=0):
+        if(orderedProduct_data['productId'].quantity<orderedProduct_data['totalQuantity']):
             return False
     return True
 def TotalPrice(orderedProducts):
@@ -33,15 +35,14 @@ class OrderedProductSerializer(serializers.ModelSerializer):
     class Meta:
         model=OrderedProduct
         fields=['totalQuantity','totalPrice','colourSelected','sizeSelected','productId']
-class OrderSerializer(serializers.ModelSerializer):
+class ValidateOrderSerializer(serializers.ModelSerializer):
     orderedProducts=OrderedProductSerializer(many=True)
     totalPrice=serializers.DecimalField(decimal_places=3,max_digits=8,required=False)
     class Meta:
         model=Order
-        fields=['id','totalPrice','shippingAddress','receiverName','receiverContact','cuopenId','customerId','cityId','orderedProducts','orderStatus','stripe_client_secret','strip_client_id']
+        fields=['id','totalPrice','shippingAddress','receiverName','receiverContact','cuopenId','customerId','cityId','orderedProducts','orderStatus','paymentMethod']
         extra_kwargs = {
-            'orderStatus': {'read_only': True},
-            'strip_client_id':{"write_only":True} 
+            'orderStatus': {'read_only': True}
         }
     def validate_orderedProducts(self, attrs):
         if len(attrs) == 0:
@@ -58,29 +59,7 @@ class OrderSerializer(serializers.ModelSerializer):
                 raise serializers.ValidationError('Token Limit Reached!!')  
         return attrs
     def create(self, validated_data):
-        # Getting the ordered Products
-        ordered_products = validated_data.pop('orderedProducts')
-        # Calculating the Total Price
-        orderPrices=TotalPrice(ordered_products)
-        if(validated_data['cuopenId']!=None):
-            if(orderPrices<validated_data['cuopenId'].minPurchase):
-                raise serializers.ValidationError({"cuopenId":["Total Purchase must be greater then "+str(validated_data['cuopenId'].minPurchase)+""]})
-            discout=(validated_data['cuopenId'].discountPercentage*orderPrices)/100
-            orderPrices=orderPrices-discout
-            validated_data['cuopenId'].totalQuantity=validated_data['cuopenId'].totalQuantity-1
-            validated_data['cuopenId'].save()
-        # Creating The order
-        order = Order.objects.create(**validated_data,totalPrice=orderPrices)
-        # Creating the orderedProduct
-        for (orderedProduct_data) in (ordered_products):
-            totalPrice=orderedProduct_data['productId'].price*orderedProduct_data['totalQuantity']
-            OrderedProduct.objects.create(orderId=order, **orderedProduct_data,totalPrice=totalPrice)
-        # Decreasing The quantity
-        for (orderedProduct_data) in (ordered_products):
-            product=orderedProduct_data['productId']
-            product.quantity=product.quantity-1
-            product.save()
-        return order
+        return validated_data
 # ============= Serializer For checking Cuopen =============
 class CheckOrderedProductSerializer(serializers.ModelSerializer):
     class Meta:
@@ -170,14 +149,18 @@ class OrderedProductSerializer(serializers.ModelSerializer):
         model = OrderedProduct
         fields = ['id','feedback','totalQuantity','totalPrice','colourSelected','sizeSelected','productId']
 
-
+class StripeSerialzier(serializers.ModelSerializer):
+    class Meta:
+        model=Stripe
+        fields=['strip_client_id','id']
 class GetAllOrdersSerializer(serializers.ModelSerializer):
     cityId=CitySerializer()
     complaints=ComplaintsSerializer()
     orderedProducts = OrderedProductSerializer(many=True, read_only=True)
+    stripe=StripeSerialzier()
     class Meta:
         model=Order
-        exclude = ('strip_client_id', )
+        fields="__all__"
 # ============== Creating Complaint ========================
 class CreateComplaintsSerializer(serializers.ModelSerializer):
     class Meta:

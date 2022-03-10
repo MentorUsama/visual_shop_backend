@@ -22,7 +22,7 @@ class OrderedAdminInline(admin.TabularInline):
 @admin.register(Order)
 class OrderAdmin(admin.ModelAdmin):
     list_display = ('id','totalPrice','status','orderDate')
-    readonly_fields = ('id','orderDate','totalPrice','shippingAddress','receiverName','receiverContact','cuopenId','customerId','cityId','strip_client_id','stripe_client_secret')
+    readonly_fields = ('id','orderDate','totalPrice','shippingAddress','receiverName','receiverContact','cuopenId','customerId','cityId')
     inlines = [OrderedAdminInline]
     def has_add_permission(self, request, obj=None):
         return False
