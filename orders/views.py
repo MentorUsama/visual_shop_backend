@@ -162,10 +162,10 @@ class CancelOrderPayment(APIView,IsAuthenticated):
         except Order.DoesNotExist:
             return SerilizationFailed({'order_id':['Please provide valid order_id']})
 
-        if order.orderStatus=='PAYMENTPENDING': # If the product is not purchased yet then you can cancel it.
+        if order.orderStatus=='Payment_pending' and order.paymentMethod=='CARD':# If the product is not purchased yet then you can cancel it.
             # Checking if the order is purchased or not from the stripe side
             intent = stripe.PaymentIntent.retrieve(
-                order.strip_client_id
+                order.stripe.strip_client_id
             )
             if intent['status']=='requires_payment_method': # if not purchased
                 order.orderStatus='canceled'
@@ -175,9 +175,13 @@ class CancelOrderPayment(APIView,IsAuthenticated):
                 if intent['status']=='succeeded':
                     order.orderStatus='shipping'
                     order.save()
-                return SerilizationFailed({'order_id':['You can not cancel the product which is already purchase shipped, canceled or payment in progress.']})
+                return SerilizationFailed({'order_id':['You can not cancel the product which is already purchased or payment in progress.']})
+        elif order.orderStatus=='packaging' and order.paymentMethod=='CASH': # if the product purchase method is cash and it is in packaging mode then you can not cacel it
+            order.orderStatus='canceled'
+            order.save()
+            return Success({'status':"cannceled"})
         else:
-            return SerilizationFailed({'order_id':['You can not cancel the product which is already purchase shipped or canceled.']})
+            return SerilizationFailed({'order_id':['You can not cancel the product which is already purchased or payment in progress.']})
 
 class ValidateCuopen(APIView,IsAuthenticated):
     def get_object(self, pk):        
