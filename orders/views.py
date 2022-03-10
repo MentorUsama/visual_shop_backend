@@ -89,7 +89,7 @@ class CreateOrder(APIView,IsAuthenticated):
                 ) 
                 strip = Stripe.objects.create(strip_client_id=intent['id'],stripe_client_secret=intent['client_secret'])
             elif validated_data['paymentMethod']=="CASH":
-                orderStatus='shipping'
+                orderStatus='packaging'
                 strip=None
 
             # Creating The order

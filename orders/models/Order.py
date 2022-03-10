@@ -16,6 +16,7 @@ class Order(models.Model):
     orderStatus = models.CharField(max_length=20, verbose_name='Status', choices=(
         ("shipping", "SHIPPING"), 
         ("received", "RECEIVED"), 
+        ("packaging", "PACKAGING"),
         ("Payment_pending", "PAYMENTPENDING"),
         ("canceled", "CANCELED")
     ))
