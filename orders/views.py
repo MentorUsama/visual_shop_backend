@@ -126,17 +126,18 @@ class ConfirmOrderPayment(APIView,IsAuthenticated):
         if 'order_id' not in data:
             return SerilizationFailed({'order_id':['Please provide valid order_id']})
         try:
-            order=Order.objects.get(id=data['order_id'],customerId=customer.id)
+            order=Order.objects.get(id=data['order_id'],customerId=customer.id,paymentMethod="CARD")
         except Order.DoesNotExist:
             return SerilizationFailed({'order_id':['Please provide valid order_id']})
 
         intent = stripe.PaymentIntent.retrieve(
-            order.strip_client_id
+            order.stripe.strip_client_id
         )
         if intent['status']=='succeeded':
-            order.orderStatus='shipping'
-            order.save()
-            return Success({'status':"shipping"})
+            if order.orderStatus=='Payment_pending':
+                order.orderStatus='packaging'
+                order.save()
+            return Success({'status':"packaging"})
         else:
             return Success({'status':order.orderStatus})
 
