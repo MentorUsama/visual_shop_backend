@@ -2,12 +2,16 @@ from django.contrib import admin
 from django.db import models
 from django.utils.html import escape
 from django.utils.html import mark_safe
-from .models import Category,SubCategory,Tags,Product,Images
+
+from shop.models.Category import Category
+from shop.models.SubCategory import SubCategory
+from shop.models.Tags import Tags
+from shop.models.Product import Product
+from shop.models.Images import Images
+
 from django_rest_passwordreset.models import ResetPasswordToken
 from django.contrib.auth.models import Group
 from django.contrib.auth.models import User
-
-
 
 # ===================== Product with different Inlines ===========================
 class ImageAdminInline(admin.TabularInline):

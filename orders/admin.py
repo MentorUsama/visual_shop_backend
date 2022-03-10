@@ -1,6 +1,10 @@
 from django.contrib import admin
 from django.db.models import fields
-from .models import Cuopen, Order, Messages, Complaints, OrderedProduct
+from orders.models.Cuopen import Cuopen
+from orders.models.Order import Order
+from orders.models.Messages import Messages
+from orders.models.Complaints import Complaints
+from orders.models.OrderedProduct import OrderedProduct
 
 
 class OrderedAdminInline(admin.TabularInline):

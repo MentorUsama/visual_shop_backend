@@ -6,7 +6,9 @@ from rest_framework.generics import ListAPIView, RetrieveAPIView
 from rest_framework.views import APIView
 from django.db.models import Count
 # getting models
-from .models import Product,Tags,Category
+from shop.models.Product import Product
+from shop.models.Tags import Tags
+from shop.models.Category import Category
 # from rest_framework import BasicAuthentication
 from visualshop.utility.request import Success,SerilizationFailed
 # Create your views here.

@@ -1,87 +1,11 @@
 from django.db import models
-from django.core.validators import MaxValueValidator, MinValueValidator, RegexValidator 
-from customer.models import Customer
 from django.dispatch import receiver
-import re
 import os
-
-# Create your models here.
-class Category(models.Model):
-    name=models.CharField(max_length=20)
-    def __str__(self):
-        return self.name
-    class Meta:
-        verbose_name_plural = "Categories"
-    
-
-class SubCategory(models.Model):
-    name=models.CharField(max_length=20)
-    categoryId=models.ForeignKey(Category,on_delete=models.PROTECT,related_name="Subcategories",verbose_name='Category')
-    class Meta:
-        ordering = ['categoryId'] #Sort in desc order
-        verbose_name_plural = "Sub Categories"
-    def __str__(self):
-        return f'{self.categoryId} > {self.name}'
-class Tags(models.Model):
-    name=models.CharField(max_length=20,unique=True)
-    def __str__(self):
-        return self.name
-    def save(self, *args, **kwargs):
-        self.name = self.name.lower()
-        return super(Tags, self).save(*args, **kwargs)
-    class Meta:
-        verbose_name_plural = "Tags"
-        
-
-
-
-
-class Product(models.Model):
-    name=models.CharField(max_length=200)
-    quantity=models.IntegerField(validators=[MinValueValidator(0)])
-    price=models.DecimalField(decimal_places=3,max_digits=8,validators=[MinValueValidator(1)])
-    description=models.TextField(max_length=800)
-    sizes=models.CharField(max_length=50,blank=True,null=True,validators=[RegexValidator(regex="^([a-z0-9\s]+,)*([a-z0-9\s]+){1}$",message="The sizes must be comma seperated",flags=re.I)])
-    tags=models.ManyToManyField(Tags)
-    subCategoryId=models.ForeignKey(SubCategory,on_delete=models.PROTECT,verbose_name='Subcategory')
-
-
-    def __str__(self):
-        return self.name
-    def save(self, *args, **kwargs):
-        # if Video.objects.filter(field_boolean=True).exists():
-        #     print('Video with field_boolean=True exists')
-        # else:
-        super(Product, self).save(*args, **kwargs)
-    class Meta:
-        ordering = ['-id']
-        verbose_name_plural = "Products"
-
-
-
-
-
-# class Feedback(models.Model):
-#     rating=models.PositiveIntegerField(validators=[MinValueValidator(1),MaxValueValidator(5)])
-#     description=models.TextField(max_length=500)
-#     customerId=models.ForeignKey(Customer,on_delete=models.CASCADE)
-#     productId=models.ForeignKey(Product,on_delete=models.CASCADE,related_name="feedbacks")
-#     def __str__(self):
-#         return str(self.rating)
-
-class Images(models.Model):
-    image=models.ImageField()
-    productId=models.ForeignKey(Product,on_delete=models.CASCADE,null=False,blank=False,related_name='images',verbose_name='Product')
-    imageColor=models.CharField(max_length=20,blank=True,null=True,verbose_name='Color')
-
-
-
-
-
-
-
-
-
+from shop.models.Category import Category
+from shop.models.Images import Images
+from shop.models.Product import Product
+from shop.models.SubCategory import SubCategory
+from shop.models.Tags import Tags
 
 # ==================== Signals for Image deleted or updated =============
 @receiver(models.signals.post_delete, sender=Images)

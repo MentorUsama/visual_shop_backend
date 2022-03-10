@@ -1,12 +1,15 @@
-from itertools import product
-from statistics import mode
-from django.db import models
-from django.db.models import fields
-from .models import Complaints, Messages, Order,OrderedProduct,Complaints,Feedback
+from orders.models.Complaints import Complaints
+from orders.models.Messages import Messages
+from orders.models.Order import Order
+from orders.models.OrderedProduct import OrderedProduct
+from orders.models.Complaints import Complaints
+from orders.models.Feedback import Feedback
 from datetime import date
 from rest_framework import serializers
-from shop.models import Product,Images
-from customer.models import City,Province
+from shop.models.Product import Product
+from shop.models.Images import Images
+from customer.models.City import City
+from customer.models.Province import Province
 
 
 

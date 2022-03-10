@@ -3,10 +3,16 @@ from django.db.models import fields
 from django.forms import IntegerField, models
 from rest_framework import serializers
 
-from .models import Category, Product, Images, Tags, SubCategory
-from orders.models import OrderedProduct,Feedback,Order
-from customer.models import Customer
-from customer.models import Customer
+from shop.models.Category import Category
+from shop.models.Product import Product
+from shop.models.Images import Images
+from shop.models.Tags import Tags
+from shop.models.SubCategory import SubCategory
+
+from orders.models.OrderedProduct import OrderedProduct
+from orders.models.Feedback import Feedback
+from orders.models.Order import Order
+from customer.models.Customer import Customer
 
 
 # ========== Gettting All The Product With As Much Data Possible ==========

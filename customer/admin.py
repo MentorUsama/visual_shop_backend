@@ -1,5 +1,7 @@
 from django.contrib import admin
-from .models import Customer, Province, City
+from customer.models.Customer import Customer
+from customer.models.Province import Province
+from customer.models.City import City
 from django.contrib.auth.models import User
 
 

@@ -2,7 +2,9 @@ from django.contrib.auth import models
 from django.db.models import fields
 from rest_framework import serializers
 from django.contrib.auth.models import User
-from .models import City, Customer,Province
+from customer.models.Province import Province
+from customer.models.City import City
+from customer.models.Customer import Customer
 # import jwt
 from rest_framework_simplejwt.tokens import RefreshToken
 from rest_framework_simplejwt.serializers import TokenObtainPairSerializer

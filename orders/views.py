@@ -4,12 +4,18 @@ from rest_framework.response import Response
 from rest_framework.pagination import PageNumberPagination
 from rest_framework.views import APIView
 from  .serializer import MessageSerializer, OrderSerializer,CheckOrderSerializer,GetAllOrdersSerializer,CreateComplaintsSerializer,AddFeedbackSerializer,ComplaintsSerializer
-from customer.models import Customer
+from customer.models.Customer import Customer
 from django.http import Http404
 from rest_framework.generics import ListAPIView
 from rest_framework.permissions import IsAuthenticated
-from .models import Cuopen,Order,Complaints, OrderedProduct,Messages
-from shop.models import Product
+
+from orders.models.Cuopen import Cuopen
+from orders.models.Order import Order
+from orders.models.Complaints import Complaints
+from orders.models.OrderedProduct import OrderedProduct
+from orders.models.Messages import Messages
+
+from shop.models.Product import Product
 from shop.serialization import ProductSerializer
 from visualshop.settings import STRIPE_SECRET_KEY
 import stripe
