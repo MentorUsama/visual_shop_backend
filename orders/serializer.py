@@ -152,7 +152,7 @@ class OrderedProductSerializer(serializers.ModelSerializer):
 class StripeSerialzier(serializers.ModelSerializer):
     class Meta:
         model=Stripe
-        fields=['strip_client_id','id']
+        fields=['stripe_client_secret','id']
 class GetAllOrdersSerializer(serializers.ModelSerializer):
     cityId=CitySerializer()
     complaints=ComplaintsSerializer()
