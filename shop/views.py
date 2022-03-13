@@ -86,14 +86,14 @@ class FilterProduct(APIView):
             products=Product.objects.all()
         if data['price'] != None:
             products = products.filter(
-                price__gte=data['price'][0], price__lte=data['price'][1])
+                price__gte=data['price'][0], price__lte=data['price'][1]).distinct()
         if data['tags'] != None:
-            products = products.filter(tags__id__in=data['tags'])
+            products = products.filter(tags__id__in=data['tags']).distinct()
         if data['subcategoryId'] != None:
-            products = products.filter(subCategoryId=data['subcategoryId'])
+            products = products.filter(subCategoryId=data['subcategoryId']).distinct()
         elif data['categoryId'] != None:
             products = products.filter(
-                subCategoryId__categoryId=data['categoryId'])
+                subCategoryId__categoryId=data['categoryId']).distinct()
         products=products.distinct()
         serializer=ProductSerializer(products,many=True,context={'request': request})
         return Success(serializer.data)
