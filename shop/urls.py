@@ -13,5 +13,6 @@ urlpatterns = [
 
     path('products/category/<pk>',views.GetProductByCategory.as_view(),name="getProductByCategory"),
     path('products/category/<category>/subcategory/<subcategory>',views.GetProductBySubCategory.as_view(),name="getProductBySubCategory"),
-    path('products/search/<str:text>',views.GetProductByText.as_view(),name="GetProductByText")
+    path('products/search/<str:text>',views.GetProductByText.as_view(),name="GetProductByText"),
+    path('products/search-by-image',views.SearchByImage.as_view(),name="SearchByImage")
 ]

@@ -118,3 +118,10 @@ class GetListOfProducts(APIView):
         products=Product.objects.filter(id__in=data['productIdList'])
         serializer=ProductSerializer(products,many=True,context={'request': request})
         return Success(serializer.data)
+
+class SearchByImage(APIView):
+    def post(self,request,format=None):
+        if 'image' not in request.FILES:
+            return SerilizationFailed({"productIdList":"Please provide image"})
+        print(request.FILES['image'])
+        return Success("ok")
