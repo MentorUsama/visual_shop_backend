@@ -11,6 +11,7 @@ from shop.views.get_product_category import GetProductByCategory
 from shop.views.get_product_by_subcategory import GetProductBySubCategory
 from shop.views.get_product_by_text import GetProductByText
 from shop.views.get_product_by_image import GetProductByImage
+from shop.views.signal_images import auto_delete_file_on_change,auto_delete_file_on_delete,image_on_save
 
 
 urlpatterns = [
