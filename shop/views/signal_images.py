@@ -12,7 +12,7 @@ def auto_delete_file_on_delete(sender, instance, **kwargs):
     print("------------------------------ on delete ---------------------")
     # File is deleted so also deleting the image
     if instance.image:
-        if os.path.isfile(instance.image.path):
+        if os.path.exists(instance.image.path):
             os.remove(instance.image.path)
     # Deleting the features related to that image
     Features.objects.filter(imageId=instance.id).delete()
@@ -30,7 +30,7 @@ def auto_delete_file_on_change(sender, instance, **kwargs):
     # Deleting the old image
     new_file = instance.image
     if not old_file == new_file:
-        if os.path.isfile(old_file.path):
+        if os.path.exists(old_file.path):
             os.remove(old_file.path)
 
 @receiver(models.signals.post_save, sender=Images)
@@ -44,5 +44,6 @@ def image_on_save(sender, instance, **kwargs):
         feature_prev=None
     # Adding the feature of image
     all_features=get_model_result(instance.image)
+    
     if(len(all_features)!=0):
         bulk_create(all_features,instance,instance.productId)

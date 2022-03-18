@@ -7,7 +7,7 @@ def get_model_result(image):
     # Getting the pretrained model
     alexnet = models.alexnet(pretrained=True)
     # getting the uploaded image
-    img=Image.open(image)
+    img=Image.open(image).convert('RGB')
     # transforming the image
     img_t = transform(img)
     # evaluation
