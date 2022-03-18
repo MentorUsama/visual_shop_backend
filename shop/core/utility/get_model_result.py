@@ -18,7 +18,6 @@ def get_model_result(image):
     url = STATIC_ROOT + "/imagenet_classes.txt"
     classes=[]
     with open(url) as f:
-        classes = [line.strip() for line in f.readlines()]
         for line in f.readlines():
             full_line=line.strip()
             label=full_line.split(',',1)[1]
@@ -27,4 +26,8 @@ def get_model_result(image):
     percentage = torch.nn.functional.softmax(out, dim=1)[0] * 100
     _, indices = torch.sort(out, descending=True)
     all_matches=[(classes[idx], percentage[idx].item()) for idx in indices[0][:5]] 
-    return all_matches
+    best_matches=[]
+    for single_matche in all_matches:
+        if single_matche[1]>50:
+            best_matches.append(single_matche)
+    return best_matches
