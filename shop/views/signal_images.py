@@ -5,7 +5,6 @@ import os
 from shop.models.Images import Images
 from shop.models.Features import Features
 from shop.core.utility.get_model_result import get_model_result
-from shop.serialization import CreateFeatureSerializer
 from shop.core.features.write import bulk_create
 # ==================== Signals for Image deleted or updated =============
 @receiver(models.signals.post_delete, sender=Images)
