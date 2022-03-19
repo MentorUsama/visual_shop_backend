@@ -28,6 +28,6 @@ def get_model_result(image):
     all_matches=[(classes[idx], percentage[idx].item()) for idx in indices[0][:5]] 
     best_matches=[]
     for single_matche in all_matches:
-        if single_matche[1]>50:
+        if single_matche[1]>40:
             best_matches.append(single_matche)
     return best_matches

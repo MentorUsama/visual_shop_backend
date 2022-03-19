@@ -13,6 +13,7 @@ from orders.models.OrderedProduct import OrderedProduct
 from orders.models.Feedback import Feedback
 from orders.models.Order import Order
 from customer.models.Customer import Customer
+from shop.models.Features import Features
 
 
 # ========== Gettting All The Product With As Much Data Possible ==========
@@ -90,3 +91,10 @@ class GetAllCategoriesSerializer(serializers.ModelSerializer):
         model = Category
         depth = 2
         fields = ['id', 'name', 'Subcategories']
+
+
+# Feature Serialize
+class FeatureSerializer(serializers.ModelSerializer):
+    class Meta:
+        model=Features
+        fields="__all__"
