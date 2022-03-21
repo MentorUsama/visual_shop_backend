@@ -13,13 +13,12 @@ from shop.models.Product import Product
 class GetProductByImage(APIView):
     def post(self,request,format=None):
         if 'image' not in request.FILES:
-            return SerilizationFailed({"productIdList":"Please provide image"})
+            return SerilizationFailed({"image":["Please provide image"]})
         
         # Getting all the features of the image with percentage greater then 50 (note: data is sorted by max percent first)
         features_detected=get_model_result(request.FILES['image'])  
-        print(features_detected)
         if len(features_detected)==0:
-            return NotFound({"message":"Unable to detect any features from the image"})
+            return NotFound({"message":"Unable to detect any features from the image",'feature_extracted':None})
 
         # Getting the label of the feature detected from the image
         features_detected_labels=[]
@@ -29,7 +28,7 @@ class GetProductByImage(APIView):
         # Getting all the features according to the labels
         saved_features=Features.objects.filter(feature__in=features_detected_labels).order_by('feature')
         if saved_features.count()==0:
-            return NotFound({"message":"No product found with the given feature"})
+            return NotFound({"message":"No product found with the given feature",'feature_extracted':features_detected})
         saved_features_serialized=FeatureSerializer(saved_features,many=True)
         saved_features_serialized_data=saved_features_serialized.data
 
@@ -60,5 +59,5 @@ class GetProductByImage(APIView):
                     products_serailizer_data_sorted.append(product_serailizer_data)
                     break
 
-        return Success(data={'features':saved_features_serialized_data_sorted_unique,'products':products_serailizer_data_sorted})
+        return Success(data={'features':saved_features_serialized_data_sorted_unique,'products':products_serailizer_data_sorted,'feature_extracted':features_detected})
         
