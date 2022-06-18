@@ -8,7 +8,7 @@ from shop.models.SubCategory import SubCategory
 from shop.models.Tags import Tags
 from shop.models.Product import Product
 from shop.models.Images import Images
-from shop.models.Features import Features
+# from shop.models.Features import Features
 from django_rest_passwordreset.models import ResetPasswordToken
 from django.contrib.auth.models import Group
 from django.contrib.auth.models import User

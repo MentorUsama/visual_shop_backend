@@ -3,9 +3,9 @@ from django.db import models
 from django.dispatch import receiver
 import os
 from shop.models.Images import Images
-from shop.models.Features import Features
+# from shop.models.Features import Features
 from shop.core.utility.get_model_result import get_model_result
-from shop.core.features.write import bulk_create
+# from shop.core.features.write import bulk_create
 # ==================== Signals for Image deleted or updated =============
 @receiver(models.signals.post_delete, sender=Images)
 def auto_delete_file_on_delete(sender, instance, **kwargs):
@@ -15,7 +15,7 @@ def auto_delete_file_on_delete(sender, instance, **kwargs):
         if os.path.exists(instance.image.path):
             os.remove(instance.image.path)
     # Deleting the features related to that image
-    Features.objects.filter(imageId=instance.id).delete()
+    # Features.objects.filter(imageId=instance.id).delete()
 
 @receiver(models.signals.pre_save, sender=Images)
 def auto_delete_file_on_change(sender, instance, **kwargs):
@@ -36,14 +36,15 @@ def auto_delete_file_on_change(sender, instance, **kwargs):
 @receiver(models.signals.post_save, sender=Images)
 def image_on_save(sender, instance, **kwargs):
     print("on_save")
+    return
     # If features already exist for that image then deleting it
-    try:
-        feature_prev=Features.objects.filter(imageId=instance.id)
-        feature_prev.delete()
-    except Features.DoesNotExist:
-        feature_prev=None
+    # try:
+    #     feature_prev=Features.objects.filter(imageId=instance.id)
+    #     feature_prev.delete()
+    # except Features.DoesNotExist:
+    #     feature_prev=None
     # Adding the feature of image
-    all_features=get_model_result(instance.image)
+    # all_features=get_model_result(instance.image)d
     
-    if(len(all_features)!=0):
-        bulk_create(all_features,instance,instance.productId)
+    # if(len(all_features)!=0):
+    #     bulk_create(all_features,instance,instance.productId)
