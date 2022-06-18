@@ -1,1 +1,0 @@
-from shop.views.signal_images import auto_delete_file_on_change,auto_delete_file_on_delete,image_on_save
