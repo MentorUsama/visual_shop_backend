@@ -187,7 +187,6 @@ def dump_single_feature(img_path, extractor):
 def dump_single_feature(img_path, extractor):
     paths = [img_path, os.path.join(DATASET_BASE, img_path), os.path.join(
         DATASET_BASE, 'in_shop', img_path)]
-    print("===========================",paths)
     for i in paths:
         if not os.path.isfile(i):
             continue
@@ -344,6 +343,7 @@ def get_top_n(dist, labels, retrieval_top_n):
 def kmeans_query(clf, features, deep_feats, color_feats, labels, retrieval_top_n=5):
     label = clf.predict(features[0].reshape(1, features[0].shape[0]))
     ind = np.where(clf.labels_ == label)
+    print("===========",ind)
     d_feats = deep_feats[ind]
     c_feats = color_feats[ind]
     n_labels = list(np.array(labels)[ind])

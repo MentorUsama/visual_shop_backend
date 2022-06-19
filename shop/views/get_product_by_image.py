@@ -1,63 +1,65 @@
 from rest_framework.views import APIView
-from torch import classes
 # model related imports
-from shop.core.utility.get_model_result import get_model_result
-from visualshop.utility.request import SerilizationFailed,Success,NotFound,unAuthrized
-from shop.models.Features import Features
-from shop.serialization import FeatureSerializer
-from shop.serialization import ProductSerializer
-from shop.models.Product import Product
-
+from visualshop.utility.request import Success,SerilizationFailed
+from visualshop.settings import STATIC_URL,BASE_DIR
+from django.core.files.storage import FileSystemStorage
+import uuid
+# model realted imports
+import torch
+from torchvision import transforms
+from PIL import Image
+import torchvision
+import os
+import joblib
+import torch.utils.data as data
+import torch.nn as nn
+import torch.nn.functional as F
+import numpy as np
+from torch.autograd import Variable
+from scipy.spatial.distance import cdist
+from sklearn.cluster import KMeans
+# model related utility
+from visualshop.utility.model_config import *
+from visualshop.utility.model_utility import *
 
 
 class GetProductByImage(APIView):
-    def post(self,request,format=None):
+    def post(self, request, format=None):
+        # Getting image
         if 'image' not in request.FILES:
             return SerilizationFailed({"image":["Please provide image"]})
+        image=request.FILES['image']
+        filename = str(uuid.uuid4())
+        image.name=filename
+
+
+        path = os.path.join(BASE_DIR,"static","images",filename)
+        fs = FileSystemStorage()
+        image_url = fs.save(path, image)
+
+        # Extracting Feature
+        deep_feats, color_feats, labels = load_feat_db()
+        if(len(deep_feats) == 0 or len(color_feats) == 0):
+            return SerilizationFailed({"message": "Unable To Load Any Feature"})
         
-        # Getting all the features of the image with percentage greater then 50 (note: data is sorted by max percent first)
-        features_detected=get_model_result(request.FILES['image'])  
-        if len(features_detected)==0:
-            return NotFound({"message":"Unable to detect any features from the image",'feature_extracted':None})
+        # Extractig Feature
+        extractor = load_test_model()
+        f = dump_single_feature(image_url, extractor)
+        if any(list(map(lambda x: x is None, f))):
+            return SerilizationFailed({"message": "Unable To fetch any feature from given image"})
 
-        # Getting the label of the feature detected from the image
-        features_detected_labels=[]
-        for feature_detected in features_detected:
-            features_detected_labels.append(feature_detected[0])
+        # Finding The Product With Similar Feature
+        number_of_products=len(deep_feats) if len(deep_feats)<5 else 5
+        query_results = naive_query(f, deep_feats, color_feats, labels, number_of_products)
+        # clf = load_kmeans_model()
+        # result = kmeans_query(clf, f, deep_feats, color_feats, labels, 5)
+        if len(query_results)==0:
+            return SerilizationFailed({"message": "No Related Product Found In Database"})
 
-        # Getting all the features according to the labels
-        saved_features=Features.objects.filter(feature__in=features_detected_labels).order_by('feature')
-        if saved_features.count()==0:
-            return NotFound({"message":"No product found with the given feature",'feature_extracted':features_detected})
-        saved_features_serialized=FeatureSerializer(saved_features,many=True)
-        saved_features_serialized_data=saved_features_serialized.data
-
-        # Sort the features according to the best match label
-        saved_features_serialized_data_sorted=[]
-        for features_detected_label in features_detected_labels:
-            for data in saved_features_serialized_data:
-                if data['feature'] == features_detected_label:
-                    saved_features_serialized_data_sorted.append(data)
-
-        saved_features_serialized_data_sorted_unique=[]
-        products_id_found=[]
-        for saved_feature in saved_features_serialized_data_sorted:
-            if saved_feature['productId'] not in products_id_found:
-                saved_features_serialized_data_sorted_unique.append(saved_feature)
-                products_id_found.append(saved_feature['productId'])
-
-        # Getting the products
-        products=Product.objects.filter(id__in=products_id_found)
-        products_serailizer=ProductSerializer(products,many=True,context={'request': request})
-        products_serailizer_data=products_serailizer.data
-        products_serailizer_data_sorted=[]
-
-        # sorting the prodct for the best match first
-        for product_id in products_id_found:
-            for product_serailizer_data in products_serailizer_data:
-                if product_serailizer_data['id']==product_id:
-                    products_serailizer_data_sorted.append(product_serailizer_data)
-                    break
-
-        return Success(data={'features':saved_features_serialized_data_sorted_unique,'products':products_serailizer_data_sorted,'feature_extracted':features_detected})
-        
+        # Getting product and image id
+        new_query_result=[]
+        for query_result in query_results:
+            splited_image=query_result[0].split()
+            splited_image.append(query_result[1])
+            new_query_result.append(splited_image)
+        return Success(data={"result": "will test soon"})

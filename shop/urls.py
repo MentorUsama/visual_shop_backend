@@ -10,8 +10,8 @@ from shop.views.get_list_of_products import GetListOfProducts
 from shop.views.get_product_category import GetProductByCategory
 from shop.views.get_product_by_subcategory import GetProductBySubCategory
 from shop.views.get_product_by_text import GetProductByText
-from shop.views.test import Test
-# from shop.views.get_product_by_image import GetProductByImage
+# from shop.views.test import Test
+from shop.views.get_product_by_image import GetProductByImage
 from shop.core.signals.signal_images import auto_delete_file_on_change,auto_delete_file_on_delete,image_on_save
 
 
@@ -26,6 +26,6 @@ urlpatterns = [
     path('products/category/<pk>',GetProductByCategory.as_view(),name="getProductByCategory"),
     path('products/category/<category>/subcategory/<subcategory>',GetProductBySubCategory.as_view(),name="getProductBySubCategory"),
     path('products/search/<str:text>',GetProductByText.as_view(),name="GetProductByText"),
-    path('test',Test.as_view(),name="Test"),
-    # path('products/search-by-image',GetProductByImage.as_view(),name="SearchByImage")
+    # path('test',Test.as_view(),name="Test"),
+    path('products/search-by-image',GetProductByImage.as_view(),name="SearchByImage")
 ]
