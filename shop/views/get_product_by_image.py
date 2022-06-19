@@ -89,7 +89,7 @@ class GetProductByImage(APIView):
         products_serailizer=ProductSerializer(products,many=True,context={'request': request})
         response={
             "products":products_serailizer.data,
-            "features":filtered_new_query_result
+            "feature_extracted":filtered_new_query_result
         }
         os.remove(image_url)
         return Success(data=response)
