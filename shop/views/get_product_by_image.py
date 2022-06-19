@@ -39,7 +39,7 @@ class GetProductByImage(APIView):
 
         # Extracting Feature
         deep_feats, color_feats, labels = load_feat_db()
-        if(len(deep_feats) == 0 or len(color_feats) == 0):
+        if(len(deep_feats) == 0 or len(color_feats) == 0) or len(labels)==0:
             return SerilizationFailed({"message": "Unable To Load Any Feature"})
         
         # Extractig Feature

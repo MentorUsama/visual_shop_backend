@@ -1,15 +1,18 @@
 from shop.models.Product import Product
+from visualshop.settings import STATIC_ROOT
+from visualshop.settings import BASE_DIR
 from django.db import models
 from django.dispatch import receiver
 import os
 from shop.models.Images import Images
+from visualshop.utility.model_utility import *
+from visualshop.utility.model_config import *
 # from shop.models.Features import Features
 from shop.core.utility.get_model_result import get_model_result
 # from shop.core.features.write import bulk_create
 # ==================== Signals for Image deleted or updated =============
 @receiver(models.signals.post_delete, sender=Images)
 def auto_delete_file_on_delete(sender, instance, **kwargs):
-    print("------------------------------ on delete ---------------------")
     # File is deleted so also deleting the image
     if instance.image:
         if os.path.exists(instance.image.path):
@@ -35,16 +38,18 @@ def auto_delete_file_on_change(sender, instance, **kwargs):
 
 @receiver(models.signals.post_save, sender=Images)
 def image_on_save(sender, instance, **kwargs):
-    print("on_save")
-    return
-    # If features already exist for that image then deleting it
-    # try:
-    #     feature_prev=Features.objects.filter(imageId=instance.id)
-    #     feature_prev.delete()
-    # except Features.DoesNotExist:
-    #     feature_prev=None
-    # Adding the feature of image
-    # all_features=get_model_result(instance.image)d
+    # Loading files
+    deep_feats_loaded, color_feats_loaded, labels_loaded = load_feat_db_different_file("all_feat.npy","all_feat.list","all_color_feat.npy")
     
-    # if(len(all_features)!=0):
-    #     bulk_create(all_features,instance,instance.productId)
+    # Getting related data
+    image_url = os.path.join(BASE_DIR,"static","images",instance.image.name)
+    product_id = instance.productId
+    image_id=instance.id
+    label=instance.image.name+" "+str(product_id)+" "+str(image_id)+"\n"
+
+    # getting new deep and color feature
+    extractor = load_test_model()
+    single_deep_feat, single_color_feat = dump_single_feature(image_url, extractor)
+    save_new_feature(deep_feats_loaded,color_feats_loaded,labels_loaded,single_deep_feat,single_color_feat,label)
+    return
+    

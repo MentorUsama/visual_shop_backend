@@ -349,3 +349,65 @@ def kmeans_query(clf, features, deep_feats, color_feats, labels, retrieval_top_n
     n_labels = list(np.array(labels)[ind])
     results = get_deep_color_top_n(features, d_feats, c_feats, n_labels, retrieval_top_n)
     return results
+
+
+
+
+
+def load_feat_db_different_file(feat_path,feat_list_path,color_feat_path):
+    feat_all = os.path.join(DATASET_BASE,feat_path)
+    feat_list = os.path.join(DATASET_BASE,feat_list_path)
+    color_feat = os.path.join(DATASET_BASE,color_feat_path)
+    if not os.path.isfile(feat_list) or not os.path.isfile(feat_all) or not os.path.isfile(color_feat):
+        print("No feature db file! Please run feature_extractor.py first.")
+        return
+    deep_feats = np.load(feat_all)
+    color_feats = np.load(color_feat)
+    with open(feat_list) as f:
+        labels = list(map(lambda x: x.strip(), f.readlines()))
+    return deep_feats, color_feats, labels
+
+def save_new_feature(feat,color_feat,feat_list,extracted_feat,extracted_color_feat,extracted_feat_list):
+    if len(feat_list)==0:
+        np.save(os.path.join(DATASET_BASE,'all_feat.npy'), [extracted_feat])
+        np.save(os.path.join(DATASET_BASE,'all_color_feat.npy'), [extracted_color_feat])
+        
+        new_feat_list = open(os.path.join(DATASET_BASE,"all_feat.list"), "a")
+        new_feat_list.write(extracted_feat_list)
+        new_feat_list.close()
+    else:
+        new_deep_feats=np.append(feat,[extracted_feat],axis=0)
+        new_color_feats=np.append(color_feat,[extracted_color_feat],axis=0)
+
+        new_feat_list = open(os.path.join(DATASET_BASE,"all_feat.list"), "a")
+        new_feat_list.write(extracted_feat_list)
+        new_feat_list.close()
+
+        np.save('all_feat.npy', new_deep_feats)
+        np.save('all_color_feat.npy', new_color_feats)
+        
+def delete_new_feature(feat,color_feat,feat_list,image_id):
+    result_found=False
+    result_index=-1
+    for (index,lst) in enumerate(feat_list):
+        splited_image=lst.split()
+        print(splited_image)
+        if int(splited_image[2])==image_id:
+            result_found=splited_image
+            result_index=index
+            break
+    if not result_found:
+        return feat,color_feat,feat_list,False
+    
+    new_feat=feat
+    new_color_feat=color_feat
+    new_feat_list=feat_list
+    
+    feat_list.pop(result_index)
+    if len(feat_list)==0:
+        color_feat=np.asarray([])
+        feat=np.asarray([])
+    else:
+        color_feat=np.delete(color_feat, [result_index],axis=0)
+        feat=np.delete(feat, [result_index],axis=0)
+    return feat,color_feat,feat_list,True
