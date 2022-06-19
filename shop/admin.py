@@ -8,7 +8,7 @@ from shop.models.SubCategory import SubCategory
 from shop.models.Tags import Tags
 from shop.models.Product import Product
 from shop.models.Images import Images
-from shop.models.Features import Features
+# from shop.models.Features import Features
 from django_rest_passwordreset.models import ResetPasswordToken
 from django.contrib.auth.models import Group
 from django.contrib.auth.models import User
@@ -19,7 +19,7 @@ class ImageAdminInline(admin.TabularInline):
     extra=1
 @admin.register(Product)
 class ProductAdmin(admin.ModelAdmin):
-    list_display = ('Image','name','quantity','price','Category','features')
+    list_display = ('Image','name','quantity','price','Category')
     inlines=[ImageAdminInline]
     # Extra Field
     # def Category(self, obj: Product):
@@ -32,19 +32,6 @@ class ProductAdmin(admin.ModelAdmin):
             return mark_safe(u'<img src="%s" width="50px"  />' % escape(firstImage.url))
         except:
             return "Not Found"
-    def features(self, obj: Product):
-        features=Features.objects.filter(productId=obj.id).order_by('percentage')
-        labels=[]
-        for feature in features:
-            if feature.feature not in labels:
-                labels.append(feature.feature)
-        string=""
-        for label in labels:
-            string=string+label+', '
-        if len(string)==0:
-            return "No Feature Detected"
-        string=string[:-2]
-        return string
     def Category(self, obj: Product):
         category_name=obj.subCategoryId.categoryId.name
         Subcategory_name=obj.subCategoryId.name
