@@ -343,7 +343,6 @@ def get_top_n(dist, labels, retrieval_top_n):
 def kmeans_query(clf, features, deep_feats, color_feats, labels, retrieval_top_n=5):
     label = clf.predict(features[0].reshape(1, features[0].shape[0]))
     ind = np.where(clf.labels_ == label)
-    print("===========",ind)
     d_feats = deep_feats[ind]
     c_feats = color_feats[ind]
     n_labels = list(np.array(labels)[ind])
@@ -391,7 +390,6 @@ def delete_new_feature(feat,color_feat,feat_list,image_id):
     result_index=-1
     for (index,lst) in enumerate(feat_list):
         splited_image=lst.split()
-        print(splited_image)
         if int(splited_image[2])==image_id:
             result_found=splited_image
             result_index=index

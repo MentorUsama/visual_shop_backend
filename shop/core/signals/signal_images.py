@@ -18,7 +18,17 @@ def auto_delete_file_on_delete(sender, instance, **kwargs):
         if os.path.exists(instance.image.path):
             os.remove(instance.image.path)
     # Deleting the features related to that image
-    # Features.objects.filter(imageId=instance.id).delete()
+    deep_feats_loaded, color_feats_loaded, labels_loaded = load_feat_db_different_file("all_feat.npy","all_feat.list","all_color_feat.npy")
+    new_deep_feats_loaded, new_color_feats_loaded, new_labels_loaded,is_deelted=delete_new_feature(deep_feats_loaded,color_feats_loaded,labels_loaded,instance.id)
+    if is_deelted:
+        np.save(os.path.join(DATASET_BASE,'all_feat.npy'), new_deep_feats_loaded)
+        np.save(os.path.join(DATASET_BASE,'all_color_feat.npy'), new_color_feats_loaded)
+        list_features_file = open(os.path.join(DATASET_BASE,"all_feat.list"), "w")
+        list_features_file.write('\n'.join(new_labels_loaded))
+        list_features_file.close()
+    else:
+        print("Failed to delete image feature")
+    return
 
 @receiver(models.signals.pre_save, sender=Images)
 def auto_delete_file_on_change(sender, instance, **kwargs):
@@ -43,7 +53,7 @@ def image_on_save(sender, instance, **kwargs):
     
     # Getting related data
     image_url = os.path.join(BASE_DIR,"static","images",instance.image.name)
-    product_id = instance.productId
+    product_id = instance.productId.id
     image_id=instance.id
     label=instance.image.name+" "+str(product_id)+" "+str(image_id)+"\n"
 
