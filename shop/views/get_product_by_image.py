@@ -18,6 +18,8 @@ import numpy as np
 from torch.autograd import Variable
 from scipy.spatial.distance import cdist
 from sklearn.cluster import KMeans
+from shop.models.Product import Product
+from shop.serialization import ProductSerializer
 # model related utility
 from visualshop.utility.model_config import *
 from visualshop.utility.model_utility import *
@@ -62,4 +64,32 @@ class GetProductByImage(APIView):
             splited_image=query_result[0].split()
             splited_image.append(query_result[1])
             new_query_result.append(splited_image)
-        return Success(data={"result": "will test soon"})
+
+        # Filtering to duplicated data
+        filtered_new_query_result=[]
+        products_ids=[]
+        for result in new_query_result:
+            index_of_result_found=False
+            index=-1
+            try:
+                index=products_ids.index(result[1])
+                index_of_result_found=True
+            except:
+                index_of_result_found=False
+                
+            if index_of_result_found:
+                if filtered_new_query_result[index][3]<result[3]:
+                    filtered_new_query_result[index]=result
+            else:
+                filtered_new_query_result.append(result)
+                products_ids.append(result[1])
+
+        # Getting products from database
+        products=Product.objects.filter(id__in=products_ids)
+        products_serailizer=ProductSerializer(products,many=True,context={'request': request})
+        response={
+            "products":products_serailizer.data,
+            "features":filtered_new_query_result
+        }
+        os.remove(image_url)
+        return Success(data=response)
